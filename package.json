@@ -1,0 +1,35 @@
+{
+  "name": "peekaboo",
+  "version": "0.0.1",
+  "description": "nginx log viewer",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:frontend": "cd frontend && bun run dev",
+    "dev:backend": "cd backend && bun run start",
+    "dev:shared": "cd packages/shared && bun run dev",
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md,js,jsx,json}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md,js,jsx,json}\""
+  },
+  "keywords": [
+    "ssh",
+    "logs",
+    "nginx",
+    "bun",
+    "react"
+  ],
+  "author": "Dino Kupinic",
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "turbo": "^2.5.0"
+  }
+}
