@@ -1,4 +1,4 @@
-# peekaboo 
+# peekaboo
 
 ## License
 

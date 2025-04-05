@@ -2,6 +2,7 @@
   "name": "peekaboo",
   "version": "0.0.1",
   "description": "nginx log viewer",
+  "packageManager": "bun@1.2.8",
   "private": true,
   "workspaces": [
     "frontend",
@@ -9,14 +10,17 @@
     "packages/*"
   ],
   "scripts": {
-    "dev:frontend": "cd frontend && bun run dev",
-    "dev:backend": "cd backend && bun run start",
-    "dev:shared": "cd packages/shared && bun run dev",
+    "dev:frontend": "turbo run dev --filter=frontend",
+    "dev:backend": "turbo run dev --filter=backend",
+    "dev:shared": "turbo run dev --filter=@peekaboo/shared",
     "dev": "turbo dev",
+    "test": "turbo test",
+    "test:frontend": "turbo run test --filter=frontend",
+    "test:backend": "turbo run test --filter=backend",
     "build": "turbo build",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md,js,jsx,json}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,md,js,jsx,json}\""
+    "lint": "turbo lint --filter=frontend",
+    "format": "prettier --write **/*",
+    "format:check": "prettier --check **/*"
   },
   "keywords": [
     "ssh",
