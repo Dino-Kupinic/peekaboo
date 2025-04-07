@@ -1,0 +1,16 @@
+services:
+  ssh-server:
+    image: linuxserver/openssh-server
+    container_name: test-ssh-server
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - PASSWORD_ACCESS=true
+      - USER_NAME=testuser
+      - USER_PASSWORD=testpass
+    ports:
+      - "2222:2222"
+    volumes:
+      - ./ssh-data:/config
+    restart: unless-stopped

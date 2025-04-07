@@ -5,7 +5,7 @@ import LoggingService from "./loggingService"
 /**
  * AuthService class to handle ssh authentication.
  */
-export class AuthService {
+export default class AuthService {
   private readonly client: Client
   private readonly logger: LoggingService
 
@@ -86,5 +86,3 @@ export class AuthService {
     this.logger.info(`${type} authentication successful for ${username}`)
   }
 }
-
-export default AuthService

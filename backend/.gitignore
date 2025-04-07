@@ -1,6 +1,9 @@
 # dependencies (bun install)
 node_modules
 
+# misc
+ssh-data
+
 # output
 out
 dist
