@@ -54,7 +54,7 @@ describe("AuthService", () => {
     await service.authenticate(data)
 
     expect(logger.info).toHaveBeenCalledWith(
-      "Password authentication successful for test",
+      "password authentication successful for test",
     )
   })
 
@@ -71,7 +71,7 @@ describe("AuthService", () => {
     await service.authenticate(data)
 
     expect(logger.info).toHaveBeenCalledWith(
-      "Key authentication successful for test",
+      "key authentication successful for test",
     )
   })
 
