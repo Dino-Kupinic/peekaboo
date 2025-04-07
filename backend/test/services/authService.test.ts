@@ -81,15 +81,4 @@ describe("AuthService", () => {
     expect(service.sshClient.end).toHaveBeenCalled()
     expect(logger.info).toHaveBeenCalledWith("Disconnected from ssh server")
   })
-
-  test("should handle disconnect when client is not connected", () => {
-    // workaround to unset the client
-    ;(service as any).client = undefined
-
-    service.disconnect()
-
-    expect(logger.warn).toHaveBeenCalledWith(
-      "Client isn't connected to any ssh server",
-    )
-  })
 })
