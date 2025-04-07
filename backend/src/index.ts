@@ -5,10 +5,10 @@ const server = Bun.serve({
   async fetch(req) {
     const data = {
       type: "password" as const,
-      host: "example.com",
+      host: "test.rebex.net",
       port: 22,
-      username: "test",
-      password: "test",
+      username: "demo",
+      password: "password",
     }
     const auth = new AuthService()
     await auth.authenticate(data)

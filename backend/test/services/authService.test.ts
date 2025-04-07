@@ -1,17 +1,28 @@
 import { test, describe, expect, mock, beforeEach, afterEach } from "bun:test"
+import { EventEmitter } from "events"
 import { AuthService } from "../../src/services/authService.ts"
 import logger from "../../src/services/loggingService.ts"
 
-mock.module("ssh2", () => ({
-  Client: mock(() => ({
-    end: mock(),
-  })),
-}))
+class MockClient extends EventEmitter {
+  end = mock()
+  connect = mock(() => {
+    setTimeout(() => {
+      this.emit("ready")
+    }, 100)
+  })
+}
+
+mock.module("ssh2", () => {
+  return {
+    Client: mock(() => new MockClient()),
+  }
+})
 
 mock.module("../../src/services/loggingService.ts", () => ({
   default: {
     info: mock(),
     warn: mock(),
+    error: mock(),
   },
 }))
 
@@ -27,8 +38,8 @@ describe("AuthService", () => {
     service.disconnect()
   })
 
-  test("should initialize with a new SSH client", () => {
-    expect(service.client).toBeDefined()
+  test("should initialize with a new ssh client", () => {
+    expect(service.sshClient).toBeDefined()
   })
 
   test("should authenticate with password", async () => {
@@ -42,7 +53,9 @@ describe("AuthService", () => {
 
     await service.authenticate(data)
 
-    expect(logger.info).toHaveBeenCalledWith("auth with password")
+    expect(logger.info).toHaveBeenCalledWith(
+      "Password authentication successful for test",
+    )
   })
 
   test("should authenticate with key", async () => {
@@ -57,33 +70,21 @@ describe("AuthService", () => {
 
     await service.authenticate(data)
 
-    expect(logger.info).toHaveBeenCalledWith("auth with key")
-  })
-
-  test("should throw error for invalid authentication type", async () => {
-    const authData = {
-      type: "invalid",
-      host: "example.com",
-      port: 22,
-      username: "test",
-    }
-
-    // @ts-ignore invalid auth type on purpose here
-    expect(service.authenticate(authData)).rejects.toThrow(
-      "Invalid authentication type",
+    expect(logger.info).toHaveBeenCalledWith(
+      "Key authentication successful for test",
     )
   })
 
   test("should disconnect the client", () => {
     service.disconnect()
 
-    expect(service.client.end).toHaveBeenCalled()
+    expect(service.sshClient.end).toHaveBeenCalled()
     expect(logger.info).toHaveBeenCalledWith("Disconnected from ssh server")
   })
 
   test("should handle disconnect when client is not connected", () => {
-    // @ts-ignore
-    service.client = undefined
+    // workaround to unset the client
+    ;(service as any).client = undefined
 
     service.disconnect()
 

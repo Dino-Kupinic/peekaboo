@@ -1,15 +1,19 @@
 import { Client } from "ssh2"
-import type { AuthBody, PasswordAuth, KeyAuth } from "../types/auth"
+import type { AuthBody, PasswordAuth, KeyAuth, AuthType } from "../types/auth"
 import logger from "./loggingService"
 
 /**
  * AuthService class to handle ssh authentication.
  */
 export class AuthService {
-  client: Client
+  private readonly client: Client
 
   constructor() {
     this.client = new Client()
+  }
+
+  get sshClient(): Client {
+    return this.client
   }
 
   /**
@@ -17,36 +21,66 @@ export class AuthService {
    * @param auth The authentication method to use.
    */
   async authenticate(auth: AuthBody): Promise<void> {
-    switch (auth.type) {
-      case "password":
-        await this.authenticateWithPassword(auth)
-        break
-      case "key":
-        await this.authenticateWithKey(auth)
-        break
-      default:
-        logger.error("Invalid authentication type")
-        throw new Error("Invalid authentication type")
-    }
+    await this.connect(auth)
+    this.logConnectionSuccess(auth.username, auth.type)
   }
 
-  private async authenticateWithPassword(auth: PasswordAuth) {
-    logger.info("auth with password")
-  }
+  /**
+   * Connect to the ssh server using the provided authentication method.
+   * @param auth
+   * @private
+   */
+  private async connect(auth: PasswordAuth | KeyAuth): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        const err = new Error("Connection timed out")
+        logger.error(err.message)
+        reject(err)
+      }, 10000)
 
-  private async authenticateWithKey(auth: KeyAuth) {
-    logger.info("auth with key")
+      this.sshClient.connect({
+        host: auth.host,
+        port: auth.port,
+        username: auth.username,
+        ...(auth.type === "password"
+          ? { password: auth.password }
+          : { privateKey: auth.key, passphrase: auth.passphrase }),
+      })
+
+      this.sshClient.on("ready", () => {
+        clearTimeout(timeout)
+        logger.info(`ssh connection established for ${auth.username}`)
+        resolve()
+      })
+
+      this.sshClient.on("error", (err) => {
+        clearTimeout(timeout)
+        logger.error(
+          `ssh connection error for ${auth.username}: ${err.message}`,
+        )
+        reject(err)
+      })
+    })
   }
 
   /**
    * Disconnect from the ssh server.
    */
   disconnect(): void {
-    if (this.client) {
-      this.client.end()
+    if (this.sshClient) {
+      this.sshClient.end()
       logger.info("Disconnected from ssh server")
     } else {
       logger.warn("Client isn't connected to any ssh server")
     }
+  }
+
+  /**
+   * Log the success of a connection attempt
+   * @param username The username used to authenticate
+   * @param type The type of authentication used
+   */
+  private logConnectionSuccess(username: string, type: AuthType) {
+    logger.info(`${type} authentication successful for ${username}`)
   }
 }
