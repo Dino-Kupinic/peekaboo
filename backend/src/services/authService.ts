@@ -27,7 +27,7 @@ export class AuthService {
 
   /**
    * Connect to the ssh server using the provided authentication method.
-   * @param auth
+   * @param auth The authentication method to use.
    * @private
    */
   private async connect(auth: PasswordAuth | KeyAuth): Promise<void> {
