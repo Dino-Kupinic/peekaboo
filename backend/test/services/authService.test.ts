@@ -1,7 +1,7 @@
 import { test, describe, expect, mock, beforeEach, afterEach } from "bun:test"
 import { EventEmitter } from "events"
-import { AuthService } from "../../src/services/authService.ts"
-import logger from "../../src/services/loggingService.ts"
+import AuthService from "../../src/services/authService.ts"
+import LoggingService from "../../src/services/loggingService.ts"
 
 class MockClient extends EventEmitter {
   end = mock()
@@ -18,20 +18,18 @@ mock.module("ssh2", () => {
   }
 })
 
-mock.module("../../src/services/loggingService.ts", () => ({
-  default: {
-    info: mock(),
-    warn: mock(),
-    error: mock(),
-  },
-}))
+const mockLoggingService = {
+  info: mock(),
+  warn: mock(),
+  error: mock(),
+} as unknown as LoggingService
 
 describe("AuthService", () => {
   let service: AuthService
 
   beforeEach(() => {
     mock.restore()
-    service = new AuthService()
+    service = new AuthService(mockLoggingService)
   })
 
   afterEach(() => {
@@ -53,7 +51,7 @@ describe("AuthService", () => {
 
     await service.authenticate(data)
 
-    expect(logger.info).toHaveBeenCalledWith(
+    expect(mockLoggingService.info).toHaveBeenCalledWith(
       "password authentication successful for test",
     )
   })
@@ -70,7 +68,7 @@ describe("AuthService", () => {
 
     await service.authenticate(data)
 
-    expect(logger.info).toHaveBeenCalledWith(
+    expect(mockLoggingService.info).toHaveBeenCalledWith(
       "key authentication successful for test",
     )
   })
@@ -79,6 +77,8 @@ describe("AuthService", () => {
     service.disconnect()
 
     expect(service.sshClient.end).toHaveBeenCalled()
-    expect(logger.info).toHaveBeenCalledWith("Disconnected from ssh server")
+    expect(mockLoggingService.info).toHaveBeenCalledWith(
+      "Disconnected from ssh server",
+    )
   })
 })

@@ -29,7 +29,6 @@ export type PasswordAuth = BaseAuth & {
   type: "password"
   /**
    * The password to use for password authentication
-   * @example "mySecretPassword"
    */
   password?: string
 }
@@ -38,6 +37,7 @@ export type KeyAuth = BaseAuth & {
   type: "key"
   /**
    * The private key to use for authentication
+   * @remarks This should be in PEM format.
    */
   key?: string
   /**

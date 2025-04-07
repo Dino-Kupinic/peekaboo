@@ -1,15 +1,17 @@
 import { Client } from "ssh2"
 import type { AuthBody, PasswordAuth, KeyAuth, AuthType } from "../types/auth"
-import logger from "./loggingService"
+import LoggingService from "./loggingService"
 
 /**
  * AuthService class to handle ssh authentication.
  */
 export class AuthService {
   private readonly client: Client
+  private readonly logger: LoggingService
 
-  constructor() {
-    this.client = new Client()
+  constructor(logger: LoggingService, client?: Client) {
+    this.client = client ?? new Client()
+    this.logger = logger
   }
 
   get sshClient(): Client {
@@ -34,7 +36,7 @@ export class AuthService {
     return new Promise<void>((resolve, reject) => {
       const timeout = setTimeout(() => {
         const err = new Error("Connection timed out")
-        logger.error(err.message)
+        this.logger.error(err.message)
         reject(err)
       }, 10000)
 
@@ -49,13 +51,13 @@ export class AuthService {
 
       this.sshClient.on("ready", () => {
         clearTimeout(timeout)
-        logger.info(`ssh connection established for ${auth.username}`)
+        this.logger.info(`ssh connection established for ${auth.username}`)
         resolve()
       })
 
       this.sshClient.on("error", (err) => {
         clearTimeout(timeout)
-        logger.error(
+        this.logger.error(
           `ssh connection error for ${auth.username}: ${err.message}`,
         )
         reject(err)
@@ -69,9 +71,9 @@ export class AuthService {
   disconnect(): void {
     if (this.sshClient) {
       this.sshClient.end()
-      logger.info("Disconnected from ssh server")
+      this.logger.info("Disconnected from ssh server")
     } else {
-      logger.warn("Client isn't connected to any ssh server")
+      this.logger.warn("Client isn't connected to any ssh server")
     }
   }
 
@@ -81,6 +83,8 @@ export class AuthService {
    * @param type The type of authentication used
    */
   private logConnectionSuccess(username: string, type: AuthType) {
-    logger.info(`${type} authentication successful for ${username}`)
+    this.logger.info(`${type} authentication successful for ${username}`)
   }
 }
+
+export default AuthService

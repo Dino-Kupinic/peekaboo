@@ -1,4 +1,5 @@
-import { AuthService } from "./services/authService"
+import AuthService from "./services/authService"
+import LoggingService from "./services/loggingService.ts"
 
 const server = Bun.serve({
   port: 3000,
@@ -10,7 +11,7 @@ const server = Bun.serve({
       username: "demo",
       password: "password",
     }
-    const auth = new AuthService()
+    const auth = new AuthService(new LoggingService())
     await auth.authenticate(data)
     return new Response("Bun!")
   },
