@@ -18,13 +18,12 @@ mock.module("ssh2", () => {
   }
 })
 
-const mockLoggingService = {
-  info: mock(),
-  warn: mock(),
-  error: mock(),
-} as unknown as LoggingService
-
 describe("AuthService", () => {
+  const mockLoggingService = {
+    info: mock(),
+    warn: mock(),
+    error: mock(),
+  } as unknown as LoggingService
   let service: AuthService
 
   beforeEach(() => {
