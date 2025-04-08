@@ -73,6 +73,8 @@ describe("AuthService", () => {
   })
 
   test("should disconnect the client", () => {
+    // @ts-ignore
+    service.isConnected = true
     service.disconnect()
 
     expect(service.sshClient.end).toHaveBeenCalled()

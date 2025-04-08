@@ -3,11 +3,12 @@ import type { AuthBody, PasswordAuth, KeyAuth, AuthType } from "../types/auth"
 import LoggingService from "./loggingService"
 
 /**
- * AuthService class to handle ssh authentication.
+ * Service class to handle ssh authentication.
  */
 export default class AuthService {
   private readonly client: Client
   private readonly logger: LoggingService
+  private isConnected: boolean = false
 
   constructor(logger: LoggingService, client?: Client) {
     this.client = client ?? new Client()
@@ -21,24 +22,29 @@ export default class AuthService {
   /**
    * Authenticate to the server using the provided authentication method.
    * @param auth The authentication method to use.
+   * @param timeout The timeout for the connection attempt.
    */
-  async authenticate(auth: AuthBody): Promise<void> {
-    await this.connect(auth)
+  async authenticate(auth: AuthBody, timeout: number = 10000): Promise<void> {
+    await this.connect(auth, timeout)
     this.logConnectionSuccess(auth.username, auth.type)
   }
 
   /**
    * Connect to the ssh server using the provided authentication method.
    * @param auth The authentication method to use.
+   * @param timeout The timeout for the connection attempt.
    * @private
    */
-  private async connect(auth: PasswordAuth | KeyAuth): Promise<void> {
+  private async connect(
+    auth: PasswordAuth | KeyAuth,
+    timeout: number,
+  ): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      const timeout = setTimeout(() => {
+      const t = setTimeout(() => {
         const err = new Error("Connection timed out")
         this.logger.error(err.message)
         reject(err)
-      }, 10000)
+      }, timeout)
 
       this.sshClient.connect({
         host: auth.host,
@@ -49,18 +55,32 @@ export default class AuthService {
           : { privateKey: auth.key, passphrase: auth.passphrase }),
       })
 
-      this.sshClient.on("ready", () => {
-        clearTimeout(timeout)
+      this.sshClient.once("ready", () => {
+        clearTimeout(t)
         this.logger.info(`ssh connection established for ${auth.username}`)
+        this.isConnected = true
         resolve()
       })
 
-      this.sshClient.on("error", (err) => {
-        clearTimeout(timeout)
+      this.sshClient.once("error", (err) => {
+        clearTimeout(t)
         this.logger.error(
           `ssh connection error for ${auth.username}: ${err.message}`,
         )
         reject(err)
+      })
+
+      this.sshClient.once("close", () => {
+        this.isConnected = false
+        this.logger.info("ssh connection closed")
+
+        if (!this.isConnected) {
+          reject(
+            new Error(
+              `ssh connection closed for ${auth.username} before becoming ready`,
+            ),
+          )
+        }
       })
     })
   }
@@ -69,8 +89,9 @@ export default class AuthService {
    * Disconnect from the ssh server.
    */
   disconnect(): void {
-    if (this.sshClient) {
+    if (this.isConnected) {
       this.sshClient.end()
+      this.isConnected = false
       this.logger.info("Disconnected from ssh server")
     } else {
       this.logger.warn("Client isn't connected to any ssh server")

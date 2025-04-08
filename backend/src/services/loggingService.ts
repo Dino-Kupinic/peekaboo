@@ -3,7 +3,7 @@ import pino from "pino"
 /**
  * Destination for the log file. This is used in production mode.
  */
-const destination = process.env.DESTINATION || "./logs.log"
+const destination = process.env.LOGS_DESTINATION || "./logs.log"
 /**
  * Log level based on the environment. We use "info" in production and "debug" in
  * development for more information.
@@ -31,7 +31,7 @@ const loggerConfig: pino.LoggerOptions = {
 }
 
 /**
- * Logging service using pino for logging. (This has nothing to do with the nginx logs)
+ * Service class using pino for logging. (This has nothing to do with the nginx logs)
  */
 export default class LoggingService {
   private readonly logger: pino.BaseLogger
