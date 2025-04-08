@@ -13,4 +13,16 @@ services:
       - "2222:2222"
     volumes:
       - ./ssh-data:/config
+      - ./nginx/logs:/var/log/nginx
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/html:/usr/share/nginx/html:ro
+      - ./nginx/conf:/etc/nginx/conf.d:ro
+      - ./nginx/logs:/var/log/nginx
     restart: unless-stopped

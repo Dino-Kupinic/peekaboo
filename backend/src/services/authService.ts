@@ -6,17 +6,13 @@ import LoggingService from "./loggingService"
  * Service class to handle ssh authentication.
  */
 export default class AuthService {
-  private readonly client: Client
-  private readonly logger: LoggingService
-  private isConnected: boolean = false
+  readonly client: Client
+  readonly logger: LoggingService
+  isConnected: boolean = false
 
   constructor(logger: LoggingService, client?: Client) {
     this.client = client ?? new Client()
     this.logger = logger
-  }
-
-  get sshClient(): Client {
-    return this.client
   }
 
   /**
@@ -46,7 +42,7 @@ export default class AuthService {
         reject(err)
       }, timeout)
 
-      this.sshClient.connect({
+      this.client.connect({
         host: auth.host,
         port: auth.port,
         username: auth.username,
@@ -55,14 +51,14 @@ export default class AuthService {
           : { privateKey: auth.key, passphrase: auth.passphrase }),
       })
 
-      this.sshClient.once("ready", () => {
+      this.client.once("ready", () => {
         clearTimeout(t)
         this.logger.info(`ssh connection established for ${auth.username}`)
         this.isConnected = true
         resolve()
       })
 
-      this.sshClient.once("error", (err) => {
+      this.client.once("error", (err) => {
         clearTimeout(t)
         this.logger.error(
           `ssh connection error for ${auth.username}: ${err.message}`,
@@ -70,7 +66,7 @@ export default class AuthService {
         reject(err)
       })
 
-      this.sshClient.once("close", () => {
+      this.client.once("close", () => {
         this.isConnected = false
         this.logger.info("ssh connection closed")
 
@@ -90,7 +86,7 @@ export default class AuthService {
    */
   disconnect(): void {
     if (this.isConnected) {
-      this.sshClient.end()
+      this.client.end()
       this.isConnected = false
       this.logger.info("Disconnected from ssh server")
     } else {

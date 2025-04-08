@@ -36,7 +36,7 @@ describe("AuthService", () => {
   })
 
   test("should initialize with a new ssh client", () => {
-    expect(service.sshClient).toBeDefined()
+    expect(service.client).toBeDefined()
   })
 
   test("should authenticate with password", async () => {
@@ -77,7 +77,7 @@ describe("AuthService", () => {
     service.isConnected = true
     service.disconnect()
 
-    expect(service.sshClient.end).toHaveBeenCalled()
+    expect(service.client.end).toHaveBeenCalled()
     expect(mockLoggingService.info).toHaveBeenCalledWith(
       "Disconnected from ssh server",
     )

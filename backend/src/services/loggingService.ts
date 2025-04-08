@@ -34,7 +34,7 @@ const loggerConfig: pino.LoggerOptions = {
  * Service class using pino for logging. (This has nothing to do with the nginx logs)
  */
 export default class LoggingService {
-  private readonly logger: pino.BaseLogger
+  readonly logger: pino.BaseLogger
 
   constructor(customLogger?: pino.BaseLogger) {
     this.logger = customLogger ?? pino(loggerConfig)

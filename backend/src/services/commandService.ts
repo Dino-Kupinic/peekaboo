@@ -5,8 +5,8 @@ import LoggingService from "./loggingService"
  * Service class to handle ssh commands.
  */
 export default class CommandService {
-  private readonly client: Client
-  private readonly logger: LoggingService
+  readonly client: Client
+  readonly logger: LoggingService
 
   constructor(client: Client, logger: LoggingService) {
     this.client = client
