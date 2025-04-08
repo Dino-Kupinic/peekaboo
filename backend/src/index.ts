@@ -20,8 +20,10 @@ const server = Bun.serve({
     "/command": async (req) => {
       if (auth.isConnected) {
         const c = new CommandService(auth.client, logger)
-        c.runCommand("cd && cat /var/log/nginx/access.log")
-        return withCors("command executed")
+        const response = await c.runCommand(
+          "cd && cat /var/log/nginx/access.log",
+        )
+        return withCors(response)
       }
       return withCors("not connected")
     },

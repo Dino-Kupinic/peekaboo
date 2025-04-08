@@ -17,23 +17,53 @@ export default class CommandService {
    * Run a command on the ssh server.
    * @param command The command to run.
    */
-  runCommand(command: string): void {
-    this.client.exec(command, (err, stream) => {
-      if (err) {
-        this.logger.error(`Command failed: ${err.message}`)
-        return
-      }
+  runCommand(command: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      this.client.exec(command, (err, stream) => {
+        if (err) {
+          this.logger.error(`Command failed: ${err.message}`)
+          return reject(err)
+        }
 
-      stream.on("data", (data: Buffer) => {
-        this.logger.info(`Output: ${data.toString()}`)
-      })
+        let stdout: string = ""
+        let stderr: string = ""
+        let resolved: boolean = false
 
-      stream.stderr.on("data", (data: Buffer) => {
-        this.logger.warn(`Error: ${data.toString()}`)
-      })
+        stream.on("data", (data: Buffer) => {
+          stdout += data.toString()
+        })
 
-      stream.on("close", () => {
-        this.logger.info(`command "${command}" finished`)
+        stream.stderr.on("data", (data: Buffer) => {
+          stderr += data.toString()
+        })
+
+        stream.on("close", (code: number, signal: string) => {
+          this.logger.info(
+            `command "${command}" exited with code ${code} and signal ${signal}`,
+          )
+
+          if (stderr) {
+            this.logger.warn(`stderr for ${command}: ${stderr}`)
+            if (!resolved) {
+              resolved = true
+              return reject(new Error(stderr))
+            }
+          } else {
+            this.logger.info(`stdout for ${command}: ${stdout}`)
+            if (!resolved) {
+              resolved = true
+              return resolve(stdout)
+            }
+          }
+        })
+
+        stream.on("error", (err: Error) => {
+          this.logger.error(`command error: ${err.message}`)
+          if (!resolved) {
+            resolved = true
+            return reject(err)
+          }
+        })
       })
     })
   }

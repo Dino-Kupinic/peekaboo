@@ -7,7 +7,7 @@ function App() {
   const [password, setPassword] = useState("testpass")
 
   async function post() {
-    const response = await fetch("http://localhost:3000/auth", {
+    await fetch("http://localhost:3000/auth", {
       method: "POST",
       body: JSON.stringify({
         host,
@@ -17,8 +17,8 @@ function App() {
         type: "password",
       }),
     })
-    const data = await response.json()
-    console.log(data)
+    const r = await fetch("http://localhost:3000/command")
+    console.log(await r.text())
   }
 
   return (
