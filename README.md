@@ -11,7 +11,7 @@ A full stack web application for viewing nginx logs in real time.
 
 ## ♻️ Release Cycle
 
-tourney follows the [Semantic Versioning](https://semver.org/) guidelines.
+peekaboo follows the [Semantic Versioning](https://semver.org/) guidelines.
 
 ## ✨ Installation and Configuration
 
