@@ -9,9 +9,23 @@ const logger = new LoggingService()
 const session = new SessionService()
 const auth = new AuthService(logger, session)
 
-const PORT = process.env.PORT || 3000
 const server = Bun.serve({
-  port: PORT,
+  fetch(req, server) {
+    const success = server.upgrade(req)
+    if (success) {
+      return undefined
+    }
+    return new Response("Hello world!")
+  },
+  websocket: {
+    open(ws) {
+      console.log("hi")
+    },
+    message(ws, message) {
+      ws.send(message)
+    },
+    close(ws) {},
+  },
   routes: {
     "/auth": async (req) => {
       const body = await req.json()
@@ -36,6 +50,10 @@ const server = Bun.serve({
       }
       return withCors("not connected")
     },
+  },
+  error(err) {
+    logger.error(err.message)
+    return new Response("Internal Server Error", { status: 500 })
   },
 })
 
