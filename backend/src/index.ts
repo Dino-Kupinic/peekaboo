@@ -27,6 +27,11 @@ const server = Bun.serve({
     close(ws) {},
   },
   routes: {
+    "/": () => {
+      return withCors(
+        `Active sessions: ${[...session.sessions.entries()].map(([key]) => `${key}`)}`,
+      )
+    },
     "/auth": async (req) => {
       const body = await req.json()
       // TODO: validate body with zod
