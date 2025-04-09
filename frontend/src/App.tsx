@@ -5,6 +5,7 @@ function App() {
   const [port, setPort] = useState("2222")
   const [username, setUsername] = useState("testuser")
   const [password, setPassword] = useState("testpass")
+  const [logs, setLogs] = useState("")
 
   async function post() {
     await fetch("http://localhost:3000/auth", {
@@ -18,7 +19,7 @@ function App() {
       }),
     })
     const r = await fetch("http://localhost:3000/command")
-    console.log(await r.text())
+    setLogs(await r.text())
   }
 
   return (
@@ -51,6 +52,7 @@ function App() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        <pre>{logs}</pre>
         <button onClick={post}>Submit</button>
       </div>
     </>

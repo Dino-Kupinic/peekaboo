@@ -21,7 +21,7 @@ export default class CommandService {
     return new Promise<string>((resolve, reject) => {
       this.client.exec(command, (err, stream) => {
         if (err) {
-          this.logger.error(`Command failed: ${err.message}`)
+          this.logger.error(`command failed: ${err.message}`)
           return reject(err)
         }
 

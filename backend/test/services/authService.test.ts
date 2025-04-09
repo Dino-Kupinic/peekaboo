@@ -1,7 +1,8 @@
-import { test, describe, expect, mock, beforeEach, afterEach } from "bun:test"
+import { test, describe, expect, mock } from "bun:test"
 import { EventEmitter } from "events"
 import AuthService from "../../src/services/authService.ts"
 import LoggingService from "../../src/services/loggingService.ts"
+import SessionService from "../../src/services/sessionService.ts"
 
 class MockClient extends EventEmitter {
   end = mock()
@@ -24,20 +25,12 @@ describe("AuthService", () => {
     warn: mock(),
     error: mock(),
   } as unknown as LoggingService
-  let service: AuthService
 
-  beforeEach(() => {
-    mock.restore()
-    service = new AuthService(mockLoggingService)
-  })
-
-  afterEach(() => {
-    service.disconnect()
-  })
-
-  test("should initialize with a new ssh client", () => {
-    expect(service.client).toBeDefined()
-  })
+  const sessionService: SessionService = new SessionService()
+  const authService: AuthService = new AuthService(
+    mockLoggingService,
+    sessionService,
+  )
 
   test("should authenticate with password", async () => {
     const data = {
@@ -48,7 +41,7 @@ describe("AuthService", () => {
       password: "test",
     }
 
-    await service.authenticate(data)
+    await authService.authenticate(data)
 
     expect(mockLoggingService.info).toHaveBeenCalledWith(
       "password authentication successful for test",
@@ -65,7 +58,7 @@ describe("AuthService", () => {
       passphrase: "test",
     }
 
-    await service.authenticate(data)
+    await authService.authenticate(data)
 
     expect(mockLoggingService.info).toHaveBeenCalledWith(
       "key authentication successful for test",
@@ -73,13 +66,15 @@ describe("AuthService", () => {
   })
 
   test("should disconnect the client", () => {
-    // @ts-ignore
-    service.isConnected = true
-    service.disconnect()
+    const mockClient = new MockClient()
+    // @ts-ignore mock client doesn't implement all methods but it's ok
+    sessionService.sessions.set("test", { client: mockClient })
+    authService.disconnect("test")
 
-    expect(service.client.end).toHaveBeenCalled()
     expect(mockLoggingService.info).toHaveBeenCalledWith(
-      "Disconnected from ssh server",
+      "disconnected from ssh server",
     )
+    expect(mockClient.end).toHaveBeenCalled()
+    expect(sessionService.sessions.has("test")).toBeFalse()
   })
 })
