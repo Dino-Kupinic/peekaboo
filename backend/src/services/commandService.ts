@@ -37,10 +37,8 @@ export default class CommandService {
           stderr += data.toString()
         })
 
-        stream.on("close", (code: number, signal: string) => {
-          this.logger.info(
-            `command "${command}" exited with code ${code} and signal ${signal}`,
-          )
+        stream.on("close", (code: number) => {
+          this.logger.info(`command "${command}" exited with code ${code}`)
 
           if (stderr) {
             this.logger.warn(`stderr for ${command}: ${stderr}`)
@@ -49,7 +47,6 @@ export default class CommandService {
               return reject(new Error(stderr))
             }
           } else {
-            this.logger.info(`stdout for ${command}: ${stdout}`)
             if (!resolved) {
               resolved = true
               return resolve(stdout)
