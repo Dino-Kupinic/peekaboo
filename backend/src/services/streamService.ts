@@ -72,7 +72,7 @@ export default class StreamService {
    * Stop a specific log stream
    * @param id The ID of the stream to stop
    */
-  stopLogStream(id: string): void {
+  stopStream(id: string): void {
     const stream = this.streams.get(id)
     if (stream) {
       stream.close()

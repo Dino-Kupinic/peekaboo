@@ -100,14 +100,14 @@ describe("StreamService", () => {
 
     await streamService.startStream(path, id, onDataMock)
 
-    streamService.stopLogStream(id)
+    streamService.stopStream(id)
 
     expect(mockStream.close).toHaveBeenCalled()
     expect(mockLogger.info).toHaveBeenCalledWith(`stopped log stream ${id}`)
   })
 
   test("should handle stopping non-existent stream", () => {
-    streamService.stopLogStream(id)
+    streamService.stopStream(id)
 
     expect(mockLogger.warn).toHaveBeenCalledWith(
       `stream with id ${id} not found, can't stop`,

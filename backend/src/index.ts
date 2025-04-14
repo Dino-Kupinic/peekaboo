@@ -1,20 +1,17 @@
+import type { WebSocketData } from "./types/websocket.ts"
+import type { AuthBody } from "./types/auth.ts"
 import AuthService from "./services/authService"
 import LoggingService from "./services/loggingService.ts"
-import withCors from "./utils/withCors.ts"
-import type { AuthBody } from "./types/auth.ts"
 import CommandService from "./services/commandService.ts"
 import SessionService from "./services/sessionService.ts"
 import StreamService from "./services/streamService.ts"
+import wsSendJson from "./utils/wsSendJson.ts"
+import withCors from "./utils/withCors.ts"
 
 const logger = new LoggingService()
 const session = new SessionService()
 const auth = new AuthService(logger, session)
 const clients = new Set<WebSocket>()
-
-type WebSocketData = {
-  stream?: StreamService
-  id?: string
-}
 
 const sockets = new Map<WebSocket, WebSocketData>()
 const server = Bun.serve({
@@ -26,7 +23,7 @@ const server = Bun.serve({
     message(ws, message) {
       try {
         const data = JSON.parse(message.toString())
-        logger.info("Received:", data)
+        logger.info("WebSocket received:", data)
 
         const wsData = sockets.get(ws) ?? {}
 
@@ -34,73 +31,62 @@ const server = Bun.serve({
           const id = data.session
           const session = auth.sessionService.sessions.get(id)
 
-          if (session) {
-            const path = data.path || "/var/log/nginx/access.log"
-            const stream = `${id}-${Date.now()}`
-
-            const streamService = new StreamService(session.client, logger)
-
-            streamService
-              .startStream(path, stream, (data) => {
-                ws.send(
-                  JSON.stringify({
-                    type: "data",
-                    stream,
-                    data,
-                  }),
-                )
-              })
-              .catch((error) => {
-                ws.send(
-                  JSON.stringify({
-                    type: "error",
-                    message: error.message,
-                  }),
-                )
-              })
-
-            sockets.set(ws, { stream: streamService, id: stream })
-
-            ws.send(
-              JSON.stringify({
-                type: "started",
-                stream,
-              }),
-            )
-          } else {
-            ws.send(
-              JSON.stringify({
-                type: "error",
-                message: "Session not found",
-              }),
-            )
+          if (!session) {
+            wsSendJson(ws, {
+              type: "error",
+              message: "Session not found",
+            })
+            return
           }
+
+          const path = data.path || "/var/log/nginx/access.log"
+          const stream = `${id}-${Date.now()}`
+
+          const streamService = new StreamService(session.client, logger)
+
+          streamService
+            .startStream(path, stream, (data) => {
+              wsSendJson(ws, {
+                type: "data",
+                stream,
+                data,
+              })
+            })
+            .catch((error) => {
+              wsSendJson(ws, {
+                type: "error",
+                message: error.message,
+              })
+            })
+
+          sockets.set(ws, { stream: streamService, id: stream })
+
+          wsSendJson(ws, {
+            type: "started",
+            stream,
+          })
         } else if (data.type === "stop" && wsData.id) {
           if (wsData.stream) {
-            wsData.stream.stopLogStream(wsData.id)
-            ws.send(
-              JSON.stringify({
-                type: "stopped",
-                stream: wsData.id,
-              }),
-            )
+            wsData.stream.stopStream(wsData.id)
+            wsSendJson(ws, {
+              type: "stopped",
+              stream: wsData.id,
+            })
             sockets.set(ws, {})
           }
         }
       } catch (error) {
         console.error("Error processing message:", error)
-        ws.send(
-          JSON.stringify({
-            type: "error",
-            message: "Invalid message format",
-          }),
-        )
+        wsSendJson(ws, {
+          type: "error",
+          message: "Invalid message format",
+        })
       }
     },
     close(ws) {
       const data = sockets.get(ws)
       if (data?.stream && data.id) {
-        data.stream.stopLogStream(data.id)
+        data.stream.stopStream(data.id)
       }
       sockets.delete(ws)
       clients.delete(ws)
