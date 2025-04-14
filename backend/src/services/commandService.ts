@@ -14,6 +14,23 @@ export default class CommandService {
   }
 
   /**
+   * Run a streaming command on the ssh server.
+   * @param command The command to run.
+   * @param onStream Callback that receives the stream for further handling
+   */
+  runStreamCommand(
+    command: string,
+    onStream: (err: Error | undefined, stream: any) => void,
+  ): void {
+    this.client.exec(command, (err, stream) => {
+      if (err) {
+        this.logger.error(`stream command failed: ${err.message}`)
+      }
+      onStream(err, stream)
+    })
+  }
+
+  /**
    * Run a command on the ssh server.
    * @param command The command to run.
    */
