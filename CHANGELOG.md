@@ -1,3 +1,17 @@
+# [1.1.0](https://github.com/Dino-Kupinic/peekaboo/compare/v1.0.0...v1.1.0) (2025-04-14)
+
+
+### Bug Fixes
+
+* add bun.lock ([bc2cda9](https://github.com/Dino-Kupinic/peekaboo/commit/bc2cda969127aae23be6ca34572d1b0f9c64ce6b))
+* remove signal ([dacf626](https://github.com/Dino-Kupinic/peekaboo/commit/dacf626024462e8b45f1e2f8c25d81e180c14cf9))
+
+
+### Features
+
+* add websocket, rework stuff, add stream service, add tests ([3fdce14](https://github.com/Dino-Kupinic/peekaboo/commit/3fdce1407710d4a916b4b4777ee340c677d06af7))
+* refactor ([e928586](https://github.com/Dino-Kupinic/peekaboo/commit/e92858645388536e36b0a15d3ad84f5a38d7b0b3))
+
 # 1.0.0 (2025-04-10)
 
 
