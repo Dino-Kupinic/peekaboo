@@ -14,6 +14,23 @@ export default class CommandService {
   }
 
   /**
+   * Run a streaming command on the ssh server.
+   * @param command The command to run.
+   * @param onStream Callback that receives the stream for further handling
+   */
+  runStreamCommand(
+    command: string,
+    onStream: (err: Error | undefined, stream: any) => void,
+  ): void {
+    this.client.exec(command, (err, stream) => {
+      if (err) {
+        this.logger.error(`stream command failed: ${err.message}`)
+      }
+      onStream(err, stream)
+    })
+  }
+
+  /**
    * Run a command on the ssh server.
    * @param command The command to run.
    */
@@ -37,10 +54,8 @@ export default class CommandService {
           stderr += data.toString()
         })
 
-        stream.on("close", (code: number, signal: string) => {
-          this.logger.info(
-            `command "${command}" exited with code ${code} and signal ${signal}`,
-          )
+        stream.on("close", (code: number) => {
+          this.logger.info(`command "${command}" exited with code ${code}`)
 
           if (stderr) {
             this.logger.warn(`stderr for ${command}: ${stderr}`)
@@ -49,7 +64,6 @@ export default class CommandService {
               return reject(new Error(stderr))
             }
           } else {
-            this.logger.info(`stdout for ${command}: ${stdout}`)
             if (!resolved) {
               resolved = true
               return resolve(stdout)

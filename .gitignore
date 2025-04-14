@@ -36,8 +36,5 @@ yarn-error.log*
 *.sln
 *.sw?
 
-# Bun
-bun.lock
-
 # Vite
 .vite/
