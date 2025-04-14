@@ -51,7 +51,7 @@ describe("StreamService", () => {
     await streamPromise
 
     expect(mockCommandService.runStreamCommand).toHaveBeenCalledWith(
-      `tail -f ${path}`,
+      `tail -n +1 -f ${path}`,
       expect.any(Function),
     )
     expect(mockLogger.info).toHaveBeenCalled()

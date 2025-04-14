@@ -33,7 +33,7 @@ export default class StreamService {
     onData: (data: string) => void,
   ): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      const command: string = `tail -f ${path}`
+      const command: string = `tail -n +1 -f ${path}`
 
       this.commandService.runStreamCommand(command, (err, stream) => {
         if (err) {

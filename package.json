@@ -1,6 +1,5 @@
 {
   "name": "peekaboo",
-  "version": "0.0.1",
   "description": "nginx log viewer",
   "packageManager": "bun@1.2.8",
   "private": true,
