@@ -1,5 +1,13 @@
 import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button.tsx"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table.tsx"
 
 interface LogStreamProps {
   session: string
@@ -37,8 +45,12 @@ export function LogStream({ session, path }: LogStreamProps) {
           switch (message.type) {
             case "data":
               if (message.data) {
+                const newLogs = message.data
+                  .split("\n")
+                  .filter((log) => log.trim() !== "")
+
                 setLogs((prev) =>
-                  [...prev, message.data].filter((log) => log !== undefined),
+                  [...prev, ...newLogs].filter((log) => log !== undefined),
                 )
               }
               break
@@ -144,17 +156,26 @@ export function LogStream({ session, path }: LogStreamProps) {
         </div>
       )}
 
-      <div className="bg-background text-foreground h-[400px] overflow-auto rounded-md border p-4 font-mono text-sm">
+      <div className="bg-background text-foreground h-[400px] overflow-auto rounded-md border">
         {logs.length === 0 ? (
           <div className="text-gray-500">
             {isStreaming ? "Waiting for logs..." : "No logs to display"}
           </div>
         ) : (
-          logs.map((log, index) => (
-            <div key={index} className="whitespace-pre-wrap">
-              {log}
-            </div>
-          ))
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Data</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {logs.map((log, index) => (
+                <TableRow key={index} className="whitespace-pre-wrap">
+                  <TableCell className="font-medium">{log}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         )}
       </div>
     </div>
