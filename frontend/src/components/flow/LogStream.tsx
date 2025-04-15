@@ -151,12 +151,12 @@ export function LogStream({ session, path }: LogStreamProps) {
       </div>
 
       {error && (
-        <div className="bg-destructive text-destructive rounded-md p-3">
+        <div className="text-destructive border-destructive rounded-md border p-3">
           {error}
         </div>
       )}
 
-      <div className="bg-background text-foreground h-full overflow-auto border-t">
+      <div className="bg-background text-foreground h-full overflow-auto border-t pb-8">
         {logs.length === 0 ? (
           <div className="text-gray-500">
             {isStreaming ? "Waiting for logs..." : "No logs to display"}
@@ -171,7 +171,7 @@ export function LogStream({ session, path }: LogStreamProps) {
             <TableBody>
               {logs.map((log, index) => (
                 <TableRow key={index} className="whitespace-pre-wrap">
-                  <TableCell className="font-medium">{log}</TableCell>
+                  <TableCell className="font-mono">{log}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
