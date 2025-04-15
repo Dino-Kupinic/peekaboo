@@ -132,7 +132,7 @@ export function LogStream({ session, path }: LogStreamProps) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex h-full w-full flex-col gap-4">
       <div className="flex items-center gap-2">
         <Button
           onClick={startLogStream}
@@ -156,7 +156,7 @@ export function LogStream({ session, path }: LogStreamProps) {
         </div>
       )}
 
-      <div className="bg-background text-foreground h-[400px] overflow-auto rounded-md border">
+      <div className="bg-background text-foreground h-full overflow-auto border-t">
         {logs.length === 0 ? (
           <div className="text-gray-500">
             {isStreaming ? "Waiting for logs..." : "No logs to display"}
