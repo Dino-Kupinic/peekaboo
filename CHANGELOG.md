@@ -1,3 +1,19 @@
+# [1.2.0](https://github.com/Dino-Kupinic/peekaboo/compare/v1.1.0...v1.2.0) (2025-04-15)
+
+
+### Bug Fixes
+
+* tests ([b3a1422](https://github.com/Dino-Kupinic/peekaboo/commit/b3a14225fd502c8e6dd908a5db543a7710197567))
+
+
+### Features
+
+* add table and display all logs, not just tail ([c7cd971](https://github.com/Dino-Kupinic/peekaboo/commit/c7cd9712d5ce98f4ed018e3da7393c7fad913edd))
+* layout mostly done ([08f5bc8](https://github.com/Dino-Kupinic/peekaboo/commit/08f5bc8456d4a7a6b962895a8efe90dd2df1ca99))
+* minor change ([1fe636a](https://github.com/Dino-Kupinic/peekaboo/commit/1fe636ae107dce72cab380371bc3e3b433f8eb2b))
+* remove focus ring ([30554ab](https://github.com/Dino-Kupinic/peekaboo/commit/30554ab90358d846d876d05b3c5f653df15dbaf6))
+* work on layout ([0e2dab4](https://github.com/Dino-Kupinic/peekaboo/commit/0e2dab4ee2e7f3e29e7dc9f36a4fb4f766910962))
+
 # [1.1.0](https://github.com/Dino-Kupinic/peekaboo/compare/v1.0.0...v1.1.0) (2025-04-14)
 
 
