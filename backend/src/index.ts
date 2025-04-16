@@ -7,6 +7,7 @@ import SessionService from "./services/sessionService.ts"
 import StreamService from "./services/streamService.ts"
 import wsSendJson from "./utils/wsSendJson.ts"
 import withCors from "./utils/withCors.ts"
+import { signToken, verifyToken } from "./utils/jwt.ts"
 
 const logger = new LoggingService()
 const session = new SessionService()
@@ -15,6 +16,7 @@ const clients = new Set<WebSocket>()
 
 const sockets = new Map<WebSocket, WebSocketData>()
 const server = Bun.serve({
+  // TODO: extract this into a service
   websocket: {
     open(ws) {
       clients.add(ws)
@@ -135,3 +137,12 @@ const server = Bun.serve({
 })
 
 console.log(`Listening on http://localhost:${server.port} ...`)
+const t = await signToken({
+  host: "localhost",
+  port: 2222,
+  username: "testuser",
+  password: "testpass",
+  type: "password",
+})
+console.log(t)
+console.log(await verifyToken(t))
