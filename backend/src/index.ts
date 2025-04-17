@@ -1,5 +1,4 @@
 import type { WebSocketData } from "./types/websocket.ts"
-import type { AuthBody } from "./types/auth.ts"
 import AuthService from "./services/authService"
 import LoggingService from "./services/loggingService.ts"
 import CommandService from "./services/commandService.ts"
@@ -7,7 +6,10 @@ import SessionService from "./services/sessionService.ts"
 import StreamService from "./services/streamService.ts"
 import wsSendJson from "./utils/wsSendJson.ts"
 import withCors from "./utils/withCors.ts"
-import { signToken, verifyToken } from "./utils/jwt.ts"
+import { authenticateJwt, getTokenFromHeader } from "./utils/jwt.ts"
+import { authBodySchema } from "./schemas/auth.ts"
+import authRoute from "./routes/auth.ts"
+import logoutRoute from "./routes/logout.ts"
 
 const logger = new LoggingService()
 const session = new SessionService()
@@ -96,31 +98,36 @@ const server = Bun.serve({
   },
   routes: {
     "/": () => {
-      return withCors(
-        `Active sessions: ${[...session.sessions.entries()].map(([key]) => `${key}`)}`,
-      )
+      return withCors("ok", 200)
     },
     "/ws": (req, server) => {
       const success = server.upgrade(req)
       if (success) return undefined
       return withCors("WebSocket running")
     },
-    "/auth": async (req) => {
-      const body = await req.json()
-      // TODO: validate body with zod
-      const client = await auth.authenticate(body as AuthBody)
-      const s = session.createSession(client)
-      return withCors(s)
+    "/auth": authRoute(auth, session),
+    "/logout": logoutRoute(auth),
+    "/session/:token": async (req) => {
+      const authResult = await authenticateJwt(req)
+      if (!authResult.valid) {
+        return withCors("Unauthorized", 401)
+      }
+      const token = getTokenFromHeader(req)
+      const sessionObj = await auth.sessionService.getSessionByToken(token)
+      if (sessionObj) {
+        return withCors({ isConnected: sessionObj.isConnected })
+      }
+      return withCors("session not found", 404)
     },
-    "/logout/:uuid": async (req) => {
-      auth.disconnect(req.params.uuid)
-      return withCors("disconnected")
-    },
-    "/command/:uuid": async (req) => {
-      const uuid = req.params.uuid
-      const session = auth.sessionService.sessions.get(uuid)
-      if (session) {
-        const c = new CommandService(session.client, logger)
+    "/command/:token": async (req) => {
+      const authResult = await authenticateJwt(req)
+      if (!authResult.valid) {
+        return withCors("Unauthorized", 401)
+      }
+      const token = req.params.token
+      const sessionObj = await auth.sessionService.getSessionByToken(token)
+      if (sessionObj) {
+        const c = new CommandService(sessionObj.client, logger)
         // TODO: command should be passed in the request body
         const response = await c.runCommand(
           "cd && cat /var/log/nginx/access.log",
@@ -137,12 +144,3 @@ const server = Bun.serve({
 })
 
 console.log(`Listening on http://localhost:${server.port} ...`)
-const t = await signToken({
-  host: "localhost",
-  port: 2222,
-  username: "testuser",
-  password: "testpass",
-  type: "password",
-})
-console.log(t)
-console.log(await verifyToken(t))

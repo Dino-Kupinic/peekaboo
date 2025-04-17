@@ -27,8 +27,8 @@ export default class AuthService {
   }
 
   /**
-   * Connect to the ssh server using the provided authentication method.
-   * @param auth The authentication method to use.
+   * Connect to the ssh server
+   * @param auth The authentication body containing the connection details.
    * @param timeout The timeout for the connection attempt.
    * @returns Promise resolving to an ssh client on successful connection.
    * @private
@@ -77,12 +77,10 @@ export default class AuthService {
       client.once("close", () => {
         clearTimeout(t)
 
-        const id = this.sessionService.findSessionByClient(client)
-        if (id) {
-          this.sessionService.sessions.delete(id)
-          this.loggingService.info(
-            `session with id ${id} removed from sessions`,
-          )
+        const token = this.sessionService.findSessionByClient(client)
+        if (token) {
+          this.sessionService.sessions.delete(token)
+          this.loggingService.info(`session ${token} removed from sessions`)
         }
 
         if (!done) {
@@ -98,18 +96,16 @@ export default class AuthService {
 
   /**
    * Disconnect from the ssh server.
-   * @param uuid The uuid of the session to disconnect from.
+   * @param token The JWT token
    */
-  disconnect(uuid: string): void {
-    const session = this.sessionService.sessions.get(uuid)
+  disconnect(token: string): void {
+    const session = this.sessionService.sessions.get(token)
     if (session) {
       session.client.end()
-      this.sessionService.sessions.delete(uuid)
+      this.sessionService.sessions.delete(token)
       this.loggingService.info("disconnected from ssh server")
     } else {
-      this.loggingService.warn(
-        `session with id ${uuid} not found, cannot disconnect`,
-      )
+      this.loggingService.warn(`session ${token} not found, cannot disconnect`)
     }
   }
 

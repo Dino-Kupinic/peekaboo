@@ -8,11 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table.tsx"
-
-interface LogStreamProps {
-  session: string
-  path?: string
-}
+import { useAuth } from "@/lib/auth/context.tsx"
 
 interface LogMessage {
   type: string
@@ -21,7 +17,9 @@ interface LogMessage {
   message?: string
 }
 
-export function LogStream({ session, path }: LogStreamProps) {
+export function LogStream({ path }: { path: string }) {
+  const { token: session } = useAuth()
+
   const [logs, setLogs] = useState<string[]>([])
   const [isStreaming, setIsStreaming] = useState(false)
   const [error, setError] = useState<string | null>(null)

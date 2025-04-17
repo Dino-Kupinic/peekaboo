@@ -30,3 +30,35 @@ export async function verifyToken(token: string) {
   const { payload } = await jwtVerify(token, secret)
   return payload
 }
+
+/**
+ * Get the token from the request header.
+ * @param req The request containing the JWT token in the Authorization header.
+ */
+export function getTokenFromHeader(req: Request) {
+  const header = req.headers.get("Authorization")
+  if (!header) {
+    throw new Error("No authorization header provided")
+  }
+  const token = header.split(" ")[1]
+  if (!token) {
+    throw new Error("No token provided")
+  }
+  return token
+}
+
+/**
+ * Authenticate the JWT token from the request.
+ * @param req The request containing the JWT token in the Authorization header.
+ */
+export async function authenticateJwt(req: Request) {
+  const token = getTokenFromHeader(req)
+  if (!token) {
+    throw new Error("No token provided")
+  }
+  const payload = await verifyToken(token)
+  if (payload === undefined) {
+    return { valid: false }
+  }
+  return { valid: true, payload }
+}
