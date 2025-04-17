@@ -131,11 +131,12 @@ export function LogStream({ path }: { path: string }) {
 
   return (
     <div className="flex h-full w-full flex-col gap-4">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 pl-3">
         <Button
           onClick={startLogStream}
           disabled={isStreaming}
           variant="default"
+          size="sm"
         >
           Start
         </Button>
@@ -143,6 +144,7 @@ export function LogStream({ path }: { path: string }) {
           onClick={stopLogStream}
           disabled={!isStreaming}
           variant="destructive"
+          size="sm"
         >
           Stop
         </Button>
