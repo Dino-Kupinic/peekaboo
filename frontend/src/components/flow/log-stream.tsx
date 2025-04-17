@@ -8,11 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table.tsx"
-
-interface LogStreamProps {
-  session: string
-  path?: string
-}
+import { useAuth } from "@/lib/auth/useAuth.tsx"
 
 interface LogMessage {
   type: string
@@ -21,7 +17,9 @@ interface LogMessage {
   message?: string
 }
 
-export function LogStream({ session, path }: LogStreamProps) {
+export function LogStream({ path }: { path: string }) {
+  const { token: session } = useAuth()
+
   const [logs, setLogs] = useState<string[]>([])
   const [isStreaming, setIsStreaming] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -133,11 +131,12 @@ export function LogStream({ session, path }: LogStreamProps) {
 
   return (
     <div className="flex h-full w-full flex-col gap-4">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 pl-3">
         <Button
           onClick={startLogStream}
           disabled={isStreaming}
           variant="default"
+          size="sm"
         >
           Start
         </Button>
@@ -145,6 +144,7 @@ export function LogStream({ session, path }: LogStreamProps) {
           onClick={stopLogStream}
           disabled={!isStreaming}
           variant="destructive"
+          size="sm"
         >
           Stop
         </Button>

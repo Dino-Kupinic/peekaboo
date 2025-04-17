@@ -2,6 +2,9 @@
 
 A full stack web application for viewing nginx logs in real time. 
 
+![preview](.github/preview.png)
+> Note: This is heavily work in progress, and this is a preview of v0.1.2.
+
 > [!CAUTION]
 > peekaboo is still heavy in development, expect breaking changes often.
 

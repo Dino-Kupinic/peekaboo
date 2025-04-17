@@ -1,22 +1,36 @@
 import type { Client } from "ssh2"
-import { randomUUIDv7 } from "bun"
 import type { Session } from "../types/session.ts"
+import type { AuthBody } from "../types/auth.ts"
+import { signToken, verifyToken } from "../utils/jwt.ts"
 
 /**
  * Service class to handle ssh sessions.
  */
-// TODO: consider JWT for future
 export default class SessionService {
   readonly sessions = new Map<string, Session>()
 
   /**
-   * Create a new session and store it in the sessions map.
+   * Create a new session and store it in the sessions map, returning a JWT as the session key.
    * @param client ssh2 client
+   * @param authBody authentication body for JWT payload
    */
-  createSession(client: Client): string {
-    const uuid = randomUUIDv7()
-    this.sessions.set(uuid, { client, isConnected: true })
-    return uuid
+  async createSession(client: Client, authBody: AuthBody): Promise<string> {
+    const jwt = await signToken(authBody)
+    this.sessions.set(jwt, { client, isConnected: true })
+    return jwt
+  }
+
+  /**
+   * Validate a JWT and retrieve the session if valid.
+   * @param token JWT token
+   */
+  async getSessionByToken(token: string): Promise<Session | undefined> {
+    try {
+      await verifyToken(token)
+      return this.sessions.get(token)
+    } catch {
+      return undefined
+    }
   }
 
   /**
@@ -24,9 +38,9 @@ export default class SessionService {
    * @param client ssh2 client
    */
   findSessionByClient(client: Client): string | undefined {
-    for (const [uuid, session] of this.sessions.entries()) {
+    for (const [jwt, session] of this.sessions.entries()) {
       if (session.client === client) {
-        return uuid
+        return jwt
       }
     }
   }
