@@ -14,32 +14,29 @@ import { EthernetPort } from "lucide-react"
 import { Label } from "@/components/ui/label.tsx"
 import { useState } from "react"
 
-export default function AuthModal({
-  setSession,
-}: {
-  setSession: (session: string) => void
-}) {
+import { useAuth } from "@/lib/auth/useAuth.tsx"
+
+export default function AuthModal() {
+  const { setToken } = useAuth()
+  // TODO: remove hardcoded values
   const [formData, setFormData] = useState({
     host: "localhost",
-    port: "2222",
+    port: 2222,
     username: "testuser",
     password: "testpass",
   })
 
-  async function connectSSH() {
+  async function connect() {
     try {
       const response = await fetch("http://localhost:3000/auth", {
         method: "POST",
         body: JSON.stringify({
-          host: formData.host,
-          port: formData.port,
-          username: formData.username,
-          password: formData.password,
+          ...formData,
           type: "password",
         }),
       })
-      const id = await response.text()
-      setSession(id)
+      const token = await response.text()
+      setToken(token)
     } catch (error) {
       console.error("Failed to connect:", error)
     }
@@ -77,9 +74,10 @@ export default function AuthModal({
               <Label htmlFor="port">Port</Label>
               <Input
                 name="port"
+                type="number"
                 value={formData.port}
                 onChange={(e) =>
-                  setFormData({ ...formData, port: e.target.value })
+                  setFormData({ ...formData, port: Number(e.target.value) })
                 }
                 placeholder="22"
                 className="w-20 font-mono"
@@ -116,7 +114,7 @@ export default function AuthModal({
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button type="submit" onClick={connectSSH} className="w-full">
+            <Button type="submit" onClick={connect} className="w-full">
               Connect
             </Button>
           </DialogClose>

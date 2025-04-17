@@ -1,12 +1,11 @@
 import { ThemeProvider } from "@/components/theme-provider.tsx"
 import { ModeToggle } from "@/components/mode-toggle.tsx"
 import { useState } from "react"
-import { LogStream } from "@/components/flow/LogStream.tsx"
+import { LogStream } from "@/components/flow/log-stream.tsx"
 import { Button } from "@/components/ui/button"
-import NavigationBar from "@/components/layouts/NavigationBar.tsx"
-import AuthModal from "@/components/connection/AuthModal.tsx"
-import ToolBar from "@/components/layouts/ToolBar.tsx"
-import Search from "@/components/toolbar/Search.tsx"
+import NavigationBar from "@/components/layouts/navigation-bar.tsx"
+import ToolBar from "@/components/layouts/tool-bar.tsx"
+import Search from "@/components/toolbar/search.tsx"
 import { Radio, RefreshCw } from "lucide-react"
 import {
   Select,
@@ -15,23 +14,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select.tsx"
+import Connection from "@/components/auth/connection.tsx"
+import AuthModal from "@/components/auth/auth-modal.tsx"
+
+import { useAuth } from "@/lib/auth/useAuth.tsx"
 
 function App() {
-  const [session, setSession] = useState<string>("")
+  const { isAuthenticated } = useAuth()
   const [customLogPath, setCustomLogPath] = useState<string>(
     "/var/log/nginx/access.log",
   )
-
-  async function logout() {
-    try {
-      await fetch(`http://localhost:3000/logout/${session}`, {
-        method: "GET",
-      })
-      setSession("")
-    } catch (error) {
-      console.error("Failed to logout:", error)
-    }
-  }
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
@@ -41,12 +33,7 @@ function App() {
             <NavigationBar>
               <h1 className="text-xl font-semibold tracking-tight">peekaboo</h1>
               <div className="flex items-center gap-2">
-                {session && (
-                  <Button variant="destructive" size="sm" onClick={logout}>
-                    Disconnect
-                  </Button>
-                )}
-                <AuthModal setSession={setSession} />
+                {isAuthenticated ? <Connection /> : <AuthModal />}
                 <ModeToggle />
               </div>
             </NavigationBar>
@@ -77,7 +64,7 @@ function App() {
                 </Button>
               </div>
             </ToolBar>
-            <LogStream session={session} path={customLogPath || undefined} />
+            <LogStream path={customLogPath} />
           </main>
         </div>
       </div>

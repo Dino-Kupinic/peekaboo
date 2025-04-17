@@ -10,7 +10,7 @@ describe("withCors", () => {
       "GET, POST, PUT, DELETE, OPTIONS",
     )
     expect(corsResponse.headers.get("Access-Control-Allow-Headers")).toBe(
-      "Content-Type",
+      "Content-Type, Authorization",
     )
   })
 

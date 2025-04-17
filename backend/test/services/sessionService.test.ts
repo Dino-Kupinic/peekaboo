@@ -1,21 +1,29 @@
 import { describe, expect, test } from "bun:test"
 import SessionService from "../../src/services/sessionService.ts"
 import { Client } from "ssh2"
+import type { AuthBody } from "../../src/types/auth.ts"
 
 describe("SessionService", () => {
   const sessionService = new SessionService()
+  const authBody = {
+    type: "password",
+    host: "example.com",
+    port: 22,
+    username: "test",
+    password: "test",
+  } as AuthBody
 
-  test("should create a session", () => {
+  test("should create a session", async () => {
     const client = new Client()
-    const uuid = sessionService.createSession(client)
-    expect(sessionService.sessions.has(uuid)).toBe(true)
+    const token = await sessionService.createSession(client, authBody)
+    expect(sessionService.sessions.has(token)).toBe(true)
   })
 
-  test("should find a session by client", () => {
+  test("should find a session by client", async () => {
     const client = new Client()
-    const uuid = sessionService.createSession(client)
+    const token = await sessionService.createSession(client, authBody)
     const id = sessionService.findSessionByClient(client)
-    expect(id).toBe(uuid)
+    expect(id).toBe(token)
   })
 
   test("should not find a session by client if not present", () => {
@@ -24,9 +32,9 @@ describe("SessionService", () => {
     expect(id).toBeUndefined()
   })
 
-  test("should remove a session", () => {
+  test("should remove a session", async () => {
     const client = new Client()
-    const uuid = sessionService.createSession(client)
+    const uuid = await sessionService.createSession(client, authBody)
     sessionService.sessions.delete(uuid)
     expect(sessionService.sessions.has(uuid)).toBe(false)
   })

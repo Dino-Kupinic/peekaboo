@@ -1,12 +1,14 @@
 import type { WebSocketData } from "./types/websocket.ts"
-import type { AuthBody } from "./types/auth.ts"
 import AuthService from "./services/authService"
 import LoggingService from "./services/loggingService.ts"
-import CommandService from "./services/commandService.ts"
 import SessionService from "./services/sessionService.ts"
 import StreamService from "./services/streamService.ts"
 import wsSendJson from "./utils/wsSendJson.ts"
 import withCors from "./utils/withCors.ts"
+import authRoute from "./routes/auth.ts"
+import logoutRoute from "./routes/logout.ts"
+import commandRoute from "./routes/command.ts"
+import sessionRoute from "./routes/session.ts"
 
 const logger = new LoggingService()
 const session = new SessionService()
@@ -15,6 +17,7 @@ const clients = new Set<WebSocket>()
 
 const sockets = new Map<WebSocket, WebSocketData>()
 const server = Bun.serve({
+  // TODO: extract this into a service
   websocket: {
     open(ws) {
       clients.add(ws)
@@ -94,39 +97,17 @@ const server = Bun.serve({
   },
   routes: {
     "/": () => {
-      return withCors(
-        `Active sessions: ${[...session.sessions.entries()].map(([key]) => `${key}`)}`,
-      )
+      return withCors("ok", 200)
     },
     "/ws": (req, server) => {
       const success = server.upgrade(req)
       if (success) return undefined
       return withCors("WebSocket running")
     },
-    "/auth": async (req) => {
-      const body = await req.json()
-      // TODO: validate body with zod
-      const client = await auth.authenticate(body as AuthBody)
-      const s = session.createSession(client)
-      return withCors(s)
-    },
-    "/logout/:uuid": async (req) => {
-      auth.disconnect(req.params.uuid)
-      return withCors("disconnected")
-    },
-    "/command/:uuid": async (req) => {
-      const uuid = req.params.uuid
-      const session = auth.sessionService.sessions.get(uuid)
-      if (session) {
-        const c = new CommandService(session.client, logger)
-        // TODO: command should be passed in the request body
-        const response = await c.runCommand(
-          "cd && cat /var/log/nginx/access.log",
-        )
-        return withCors(response)
-      }
-      return withCors("not connected")
-    },
+    "/auth": authRoute(auth, session),
+    "/logout": logoutRoute(auth),
+    "/session/:token": sessionRoute(auth),
+    "/command/:token": commandRoute(auth, logger),
   },
   error(err) {
     logger.error(err.message)
