@@ -1,3 +1,33 @@
+# [1.2.0](https://github.com/Dino-Kupinic/peekaboo/compare/v1.1.0...v1.2.0) (2025-04-15)
+
+
+### Bug Fixes
+
+* tests ([b3a1422](https://github.com/Dino-Kupinic/peekaboo/commit/b3a14225fd502c8e6dd908a5db543a7710197567))
+
+
+### Features
+
+* add table and display all logs, not just tail ([c7cd971](https://github.com/Dino-Kupinic/peekaboo/commit/c7cd9712d5ce98f4ed018e3da7393c7fad913edd))
+* layout mostly done ([08f5bc8](https://github.com/Dino-Kupinic/peekaboo/commit/08f5bc8456d4a7a6b962895a8efe90dd2df1ca99))
+* minor change ([1fe636a](https://github.com/Dino-Kupinic/peekaboo/commit/1fe636ae107dce72cab380371bc3e3b433f8eb2b))
+* remove focus ring ([30554ab](https://github.com/Dino-Kupinic/peekaboo/commit/30554ab90358d846d876d05b3c5f653df15dbaf6))
+* work on layout ([0e2dab4](https://github.com/Dino-Kupinic/peekaboo/commit/0e2dab4ee2e7f3e29e7dc9f36a4fb4f766910962))
+
+# [1.1.0](https://github.com/Dino-Kupinic/peekaboo/compare/v1.0.0...v1.1.0) (2025-04-14)
+
+
+### Bug Fixes
+
+* add bun.lock ([bc2cda9](https://github.com/Dino-Kupinic/peekaboo/commit/bc2cda969127aae23be6ca34572d1b0f9c64ce6b))
+* remove signal ([dacf626](https://github.com/Dino-Kupinic/peekaboo/commit/dacf626024462e8b45f1e2f8c25d81e180c14cf9))
+
+
+### Features
+
+* add websocket, rework stuff, add stream service, add tests ([3fdce14](https://github.com/Dino-Kupinic/peekaboo/commit/3fdce1407710d4a916b4b4777ee340c677d06af7))
+* refactor ([e928586](https://github.com/Dino-Kupinic/peekaboo/commit/e92858645388536e36b0a15d3ad84f5a38d7b0b3))
+
 # 1.0.0 (2025-04-10)
 
 
