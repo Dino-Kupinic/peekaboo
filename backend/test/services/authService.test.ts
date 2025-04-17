@@ -44,24 +44,7 @@ describe("AuthService", () => {
     await authService.authenticate(data)
 
     expect(mockLoggingService.info).toHaveBeenCalledWith(
-      "password authentication successful for test",
-    )
-  })
-
-  test("should authenticate with key", async () => {
-    const data = {
-      type: "key" as const,
-      host: "example.com",
-      port: 22,
-      username: "test",
-      key: "test",
-      passphrase: "test",
-    }
-
-    await authService.authenticate(data)
-
-    expect(mockLoggingService.info).toHaveBeenCalledWith(
-      "key authentication successful for test",
+      "authentication successful for test",
     )
   })
 

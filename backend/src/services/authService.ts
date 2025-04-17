@@ -1,5 +1,5 @@
 import { Client } from "ssh2"
-import type { AuthBody, AuthType } from "../types/auth"
+import type { AuthBody } from "../types/auth"
 import type SessionService from "./sessionService.ts"
 import LoggingService from "./loggingService"
 
@@ -22,7 +22,7 @@ export default class AuthService {
    */
   async authenticate(auth: AuthBody, timeout: number = 10000): Promise<Client> {
     const client = await this.connect(auth, timeout)
-    this.logConnectionSuccess(auth.username, auth.type)
+    this.logConnectionSuccess(auth.username)
     return client
   }
 
@@ -51,9 +51,7 @@ export default class AuthService {
         host: auth.host,
         port: auth.port,
         username: auth.username,
-        ...(auth.type === "password"
-          ? { password: auth.password }
-          : { privateKey: auth.key, passphrase: auth.passphrase }),
+        password: auth.password,
       })
 
       client.once("ready", () => {
@@ -118,11 +116,8 @@ export default class AuthService {
   /**
    * Log the success of a connection attempt
    * @param username The username used to authenticate
-   * @param type The type of authentication used
    */
-  private logConnectionSuccess(username: string, type: AuthType) {
-    this.loggingService.info(
-      `${type} authentication successful for ${username}`,
-    )
+  private logConnectionSuccess(username: string) {
+    this.loggingService.info(`authentication successful for ${username}`)
   }
 }
