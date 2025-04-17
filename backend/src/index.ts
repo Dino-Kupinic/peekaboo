@@ -1,15 +1,14 @@
 import type { WebSocketData } from "./types/websocket.ts"
 import AuthService from "./services/authService"
 import LoggingService from "./services/loggingService.ts"
-import CommandService from "./services/commandService.ts"
 import SessionService from "./services/sessionService.ts"
 import StreamService from "./services/streamService.ts"
 import wsSendJson from "./utils/wsSendJson.ts"
 import withCors from "./utils/withCors.ts"
-import { authenticateJwt, getTokenFromHeader } from "./utils/jwt.ts"
-import { authBodySchema } from "./schemas/auth.ts"
 import authRoute from "./routes/auth.ts"
 import logoutRoute from "./routes/logout.ts"
+import commandRoute from "./routes/command.ts"
+import sessionRoute from "./routes/session.ts"
 
 const logger = new LoggingService()
 const session = new SessionService()
@@ -107,35 +106,8 @@ const server = Bun.serve({
     },
     "/auth": authRoute(auth, session),
     "/logout": logoutRoute(auth),
-    "/session/:token": async (req) => {
-      const authResult = await authenticateJwt(req)
-      if (!authResult.valid) {
-        return withCors("Unauthorized", 401)
-      }
-      const token = getTokenFromHeader(req)
-      const sessionObj = await auth.sessionService.getSessionByToken(token)
-      if (sessionObj) {
-        return withCors({ isConnected: sessionObj.isConnected })
-      }
-      return withCors("session not found", 404)
-    },
-    "/command/:token": async (req) => {
-      const authResult = await authenticateJwt(req)
-      if (!authResult.valid) {
-        return withCors("Unauthorized", 401)
-      }
-      const token = req.params.token
-      const sessionObj = await auth.sessionService.getSessionByToken(token)
-      if (sessionObj) {
-        const c = new CommandService(sessionObj.client, logger)
-        // TODO: command should be passed in the request body
-        const response = await c.runCommand(
-          "cd && cat /var/log/nginx/access.log",
-        )
-        return withCors(response)
-      }
-      return withCors("not connected")
-    },
+    "/session/:token": sessionRoute(auth),
+    "/command/:token": commandRoute(auth, logger),
   },
   error(err) {
     logger.error(err.message)
