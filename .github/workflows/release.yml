@@ -27,6 +27,8 @@ jobs:
 
       - name: run tests
         run: bun test
+        env:
+          JWT_SECRET: "03701e1b4550c20fa380692f385f34279e2415ad5906b2e9ca02893118299646"
 
       - name: run semantic release
         run: bun run release
