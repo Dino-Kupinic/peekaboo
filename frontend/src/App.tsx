@@ -17,7 +17,10 @@ import {
 import Connection from "@/components/auth/connection.tsx"
 import AuthModal from "@/components/auth/auth-modal.tsx"
 
+import { useAuth } from "@/lib/auth/useAuth.tsx"
+
 function App() {
+  const { isAuthenticated } = useAuth()
   const [customLogPath, setCustomLogPath] = useState<string>(
     "/var/log/nginx/access.log",
   )
@@ -30,8 +33,7 @@ function App() {
             <NavigationBar>
               <h1 className="text-xl font-semibold tracking-tight">peekaboo</h1>
               <div className="flex items-center gap-2">
-                <Connection />
-                <AuthModal />
+                {isAuthenticated ? <Connection /> : <AuthModal />}
                 <ModeToggle />
               </div>
             </NavigationBar>

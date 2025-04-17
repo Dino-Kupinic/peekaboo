@@ -13,7 +13,8 @@ import { Input } from "@/components/ui/input.tsx"
 import { EthernetPort } from "lucide-react"
 import { Label } from "@/components/ui/label.tsx"
 import { useState } from "react"
-import { useAuth } from "@/lib/auth/context.tsx"
+
+import { useAuth } from "@/lib/auth/useAuth.tsx"
 
 export default function AuthModal() {
   const { setToken } = useAuth()
@@ -35,7 +36,6 @@ export default function AuthModal() {
         }),
       })
       const token = await response.text()
-      console.log(token)
       setToken(token)
     } catch (error) {
       console.error("Failed to connect:", error)
@@ -77,7 +77,7 @@ export default function AuthModal() {
                 type="number"
                 value={formData.port}
                 onChange={(e) =>
-                  setFormData({ ...formData, port: e.target.value })
+                  setFormData({ ...formData, port: Number(e.target.value) })
                 }
                 placeholder="22"
                 className="w-20 font-mono"

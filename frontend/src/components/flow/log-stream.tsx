@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table.tsx"
-import { useAuth } from "@/lib/auth/context.tsx"
+import { useAuth } from "@/lib/auth/useAuth.tsx"
 
 interface LogMessage {
   type: string
