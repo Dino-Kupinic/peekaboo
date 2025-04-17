@@ -1,4 +1,3 @@
-import { authenticateJwt } from "../utils/jwt.ts"
 import withCors from "../utils/withCors.ts"
 import { authBodySchema } from "../schemas/auth.ts"
 import type AuthService from "../services/authService.ts"
