@@ -1,3 +1,16 @@
+# [1.3.0](https://github.com/Dino-Kupinic/peekaboo/compare/v1.2.0...v1.3.0) (2025-04-17)
+
+
+### Features
+
+* extract 2 routes and update test ([0039a2f](https://github.com/Dino-Kupinic/peekaboo/commit/0039a2faf9fae90a8024a800bada7f311844017d))
+* jwt mostly works now, lots of refactors ([22adb56](https://github.com/Dino-Kupinic/peekaboo/commit/22adb56eda8288178b3ff8b3e46bef1b4642a147))
+* logout works properly now ([2e34ee5](https://github.com/Dino-Kupinic/peekaboo/commit/2e34ee5973511da9df8525859cd836ef60f05c53))
+* refactors and add jwt-decode and popover ([0a31ba2](https://github.com/Dino-Kupinic/peekaboo/commit/0a31ba2d88183c0ca64fcef783aa3928da7bb348))
+* remove key auth + minor changes ([3686cf4](https://github.com/Dino-Kupinic/peekaboo/commit/3686cf429364b93d35b956eb8f6322c959144d88))
+* small changes ([ed8f615](https://github.com/Dino-Kupinic/peekaboo/commit/ed8f61565c0e7bb25832c3071be1333180559696))
+* working on jwt migration ([89c81b0](https://github.com/Dino-Kupinic/peekaboo/commit/89c81b0814d55f41ba64bfc5db2ee5a0118d4ac1))
+
 # [1.2.0](https://github.com/Dino-Kupinic/peekaboo/compare/v1.1.0...v1.2.0) (2025-04-15)
 
 
