@@ -20,7 +20,7 @@ interface LogMessage {
 export function LogStream({ path }: { path: string }) {
   const { token: session } = useAuth()
 
-  const [logs, setLogs] = useState<string[]>([])
+  const [logs, setLogs] = useState<any[]>([])
   const [isStreaming, setIsStreaming] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [stream, setStream] = useState<string | null>(null)
@@ -43,13 +43,13 @@ export function LogStream({ path }: { path: string }) {
           switch (message.type) {
             case "data":
               if (message.data) {
-                const newLogs = message.data
-                  .split("\n")
-                  .filter((log) => log.trim() !== "")
-
-                setLogs((prev) =>
-                  [...prev, ...newLogs].filter((log) => log !== undefined),
-                )
+                try {
+                  const parsed = JSON.parse(message.data)
+                  setLogs((prev) => [...prev, parsed])
+                } catch (err) {
+                  setLogs((prev) => [...prev, { raw: message.data }])
+                  console.error("error parsing log data:", err)
+                }
               }
               break
             case "started":
@@ -165,13 +165,22 @@ export function LogStream({ path }: { path: string }) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Data</TableHead>
+                {logs.length > 0 &&
+                  Object.keys(logs[0]).map((key) => (
+                    <TableHead key={key}>{key}</TableHead>
+                  ))}
               </TableRow>
             </TableHeader>
             <TableBody>
               {logs.map((log, index) => (
                 <TableRow key={index} className="whitespace-pre-wrap">
-                  <TableCell className="font-mono">{log}</TableCell>
+                  {Object.keys(log).map((key) => (
+                    <TableCell key={key} className="font-mono">
+                      {typeof log[key] === "object"
+                        ? JSON.stringify(log[key])
+                        : String(log[key])}
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))}
             </TableBody>
