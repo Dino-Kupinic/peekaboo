@@ -1,3 +1,15 @@
+# [1.4.0](https://github.com/Dino-Kupinic/peekaboo/compare/v1.3.0...v1.4.0) (2025-04-28)
+
+
+### Bug Fixes
+
+* tests ([f97c98b](https://github.com/Dino-Kupinic/peekaboo/commit/f97c98bab906111029a26a199e6df7718fdbf6e4))
+
+
+### Features
+
+* structured logs ([86c54ea](https://github.com/Dino-Kupinic/peekaboo/commit/86c54ea2883642a07e1f3fc65e99bc282ff5ada7))
+
 # [1.3.0](https://github.com/Dino-Kupinic/peekaboo/compare/v1.2.0...v1.3.0) (2025-04-17)
 
 
