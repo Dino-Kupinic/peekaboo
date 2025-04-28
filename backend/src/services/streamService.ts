@@ -102,7 +102,7 @@ export default class StreamService {
    * @param line The line to parse.
    * @private
    */
-  private parseLine(line: string): Record<string, any> {
+  parseLine(line: string): Record<string, any> {
     const match = line.match(this.regex)
     if (!match) {
       return { raw: line }

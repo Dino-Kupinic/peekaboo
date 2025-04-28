@@ -55,7 +55,9 @@ describe("StreamService", () => {
       expect.any(Function),
     )
     expect(mockLogger.info).toHaveBeenCalled()
-    expect(onDataMock).toHaveBeenCalledWith(data)
+    expect(onDataMock).toHaveBeenCalledWith(
+      JSON.stringify(streamService.parseLine(data)),
+    )
   })
 
   test("should handle stream command errors", async () => {
