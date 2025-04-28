@@ -44,7 +44,12 @@ export default class StreamService {
         this.streams.set(id, stream)
 
         stream.on("data", (data: Buffer) => {
-          onData(data.toString())
+          const lines = data.toString().split("\n")
+          for (const line of lines) {
+            if (line.trim().length === 0) continue
+            const parsed = this.parseLine(line)
+            onData(JSON.stringify(parsed))
+          }
         })
 
         stream.stderr.on("data", (data: Buffer) => {
@@ -80,6 +85,37 @@ export default class StreamService {
       this.logger.info(`stopped log stream ${id}`)
     } else {
       this.logger.warn(`stream with id ${id} not found, can't stop`)
+    }
+  }
+
+  /**
+   * Regex that matches default access log format in NGINX.
+   * @private
+   */
+  // TODO: For now, we only parse the default NGINX log format
+  //  The default error log format (+ custom formats) is not supported yet.
+  private readonly regex =
+    /^(\S+) - (\S+) \[(.+?)] "(.+?)" (\d{3}) (\d+) "(.*?)" "(.*?)"$/
+
+  /**
+   * Parses a line from an NGINX log file.
+   * @param line The line to parse.
+   * @private
+   */
+  private parseLine(line: string): Record<string, any> {
+    const match = line.match(this.regex)
+    if (!match) {
+      return { raw: line }
+    }
+    return {
+      remote_addr: match[1],
+      remote_user: match[2],
+      time_local: match[3],
+      request: match[4],
+      status: parseInt(<string>match[5], 10),
+      body_bytes_sent: parseInt(<string>match[6], 10),
+      http_referer: match[7],
+      http_user_agent: match[8],
     }
   }
 }
