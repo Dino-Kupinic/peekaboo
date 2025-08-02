@@ -1,5 +1,5 @@
-import type { Client } from "ssh2"
-import LoggingService from "./loggingService"
+import type { Client } from 'ssh2'
+import LoggingService from './loggingService'
 
 /**
  * Service class to handle ssh commands.
@@ -42,19 +42,19 @@ export default class CommandService {
           return reject(err)
         }
 
-        let stdout: string = ""
-        let stderr: string = ""
+        let stdout: string = ''
+        let stderr: string = ''
         let resolved: boolean = false
 
-        stream.on("data", (data: Buffer) => {
+        stream.on('data', (data: Buffer) => {
           stdout += data.toString()
         })
 
-        stream.stderr.on("data", (data: Buffer) => {
+        stream.stderr.on('data', (data: Buffer) => {
           stderr += data.toString()
         })
 
-        stream.on("close", (code: number) => {
+        stream.on('close', (code: number) => {
           this.logger.info(`command "${command}" exited with code ${code}`)
 
           if (stderr) {
@@ -71,7 +71,7 @@ export default class CommandService {
           }
         })
 
-        stream.on("error", (err: Error) => {
+        stream.on('error', (err: Error) => {
           this.logger.error(`command error: ${err.message}`)
           if (!resolved) {
             resolved = true

@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react"
-import { Button } from "@/components/ui/button.tsx"
+import { useEffect, useRef, useState } from 'react'
+import { Button } from '@/components/ui/button.tsx'
 import {
   Table,
   TableBody,
@@ -7,8 +7,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table.tsx"
-import { useAuth } from "@/lib/auth/useAuth.tsx"
+} from '@/components/ui/table.tsx'
+import { useAuth } from '@/lib/auth/useAuth.tsx'
 
 interface LogMessage {
   type: string
@@ -28,12 +28,12 @@ export function LogStream({ path }: { path: string }) {
 
   useEffect(() => {
     const connect = () => {
-      const socket = new WebSocket("ws://localhost:3000/ws")
+      const socket = new WebSocket('ws://localhost:3000/ws')
       socketRef.current = socket
 
       socket.onopen = () => {
         setError(null)
-        console.log("connected")
+        console.log('connected')
       }
 
       socket.onmessage = (event) => {
@@ -41,45 +41,45 @@ export function LogStream({ path }: { path: string }) {
           const message: LogMessage = JSON.parse(event.data)
 
           switch (message.type) {
-            case "data":
+            case 'data':
               if (message.data) {
                 try {
                   const parsed = JSON.parse(message.data)
                   setLogs((prev) => [...prev, parsed])
                 } catch (err) {
                   setLogs((prev) => [...prev, { raw: message.data }])
-                  console.error("error parsing log data:", err)
+                  console.error('error parsing log data:', err)
                 }
               }
               break
-            case "started":
+            case 'started':
               setStream(message.stream || null)
               setIsStreaming(true)
               setError(null)
               break
-            case "stopped":
+            case 'stopped':
               setIsStreaming(false)
               setStream(null)
               break
-            case "error":
-              setError(message.message || "Unknown error")
+            case 'error':
+              setError(message.message || 'Unknown error')
               setIsStreaming(false)
               break
             default:
-              console.log("unknown message type:", message)
+              console.log('unknown message type:', message)
           }
         } catch (err) {
-          console.error("error parsing message:", err)
+          console.error('error parsing message:', err)
         }
       }
 
       socket.onclose = () => {
-        console.log("connection closed")
+        console.log('connection closed')
       }
 
       socket.onerror = (error) => {
         console.error(error)
-        setError("connection error")
+        setError('connection error')
       }
     }
 
@@ -97,7 +97,7 @@ export function LogStream({ path }: { path: string }) {
 
   const startLogStream = () => {
     if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) {
-      setError("not connected")
+      setError('not connected')
       return
     }
 
@@ -106,7 +106,7 @@ export function LogStream({ path }: { path: string }) {
 
     socketRef.current.send(
       JSON.stringify({
-        type: "start",
+        type: 'start',
         session,
         path,
       }),
@@ -115,14 +115,14 @@ export function LogStream({ path }: { path: string }) {
 
   const stopLogStream = () => {
     if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) {
-      setError("not connected")
+      setError('not connected')
       return
     }
 
     if (stream) {
       socketRef.current.send(
         JSON.stringify({
-          type: "stop",
+          type: 'stop',
           stream,
         }),
       )
@@ -159,7 +159,7 @@ export function LogStream({ path }: { path: string }) {
       <div className="bg-background text-foreground h-full overflow-auto border-t pb-8">
         {logs.length === 0 ? (
           <div className="text-gray-500">
-            {isStreaming ? "Waiting for logs..." : "No logs to display"}
+            {isStreaming ? 'Waiting for logs...' : 'No logs to display'}
           </div>
         ) : (
           <Table>
@@ -176,7 +176,7 @@ export function LogStream({ path }: { path: string }) {
                 <TableRow key={index} className="whitespace-pre-wrap">
                   {Object.keys(log).map((key) => (
                     <TableCell key={key} className="font-mono">
-                      {typeof log[key] === "object"
+                      {typeof log[key] === 'object'
                         ? JSON.stringify(log[key])
                         : String(log[key])}
                     </TableCell>
