@@ -1,3 +1,11 @@
+# [1.6.0](https://github.com/Dino-Kupinic/peekaboo/compare/v1.5.0...v1.6.0) (2025-08-02)
+
+
+### Features
+
+* add husky and lint-staged ([9a13233](https://github.com/Dino-Kupinic/peekaboo/commit/9a1323313df3f6dfc724274adade4cf4a3e0ed64))
+* restructure app and fix minor stuff ([74b2466](https://github.com/Dino-Kupinic/peekaboo/commit/74b24661a7eb64bc34bd77bd19149d7b85af5d31))
+
 # [1.5.0](https://github.com/Dino-Kupinic/peekaboo/compare/v1.4.0...v1.5.0) (2025-08-02)
 
 
