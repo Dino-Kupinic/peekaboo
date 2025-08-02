@@ -3,14 +3,14 @@
   "description": "nginx log viewer",
   "packageManager": "bun@1.2.19",
   "private": true,
-  "workspaces": ["frontend", "backend", "packages/*"],
+  "workspaces": ["apps/*", "packages/*"],
   "scripts": {
-    "dev:frontend": "turbo run dev --filter=frontend",
-    "dev:backend": "turbo run dev --filter=backend",
+    "dev:web": "turbo run dev --filter=@peekaboo/web",
+    "dev:api": "turbo run dev --filter=@peekaboo/api",
     "dev:shared": "turbo run dev --filter=@peekaboo/shared",
     "dev": "turbo dev",
-    "test:frontend": "turbo run test --filter=frontend",
-    "test:backend": "turbo run test --filter=backend",
+    "test:web": "turbo run test --filter=@peekaboo/web",
+    "test:api": "turbo run test --filter=@peekaboo/api",
     "test": "turbo test",
     "build": "turbo build",
     "lint": "biome lint --write",
@@ -19,7 +19,8 @@
     "format:check": "biome format",
     "check": "biome check --write",
     "check:check": "biome check",
-    "release": "semantic-release"
+    "release": "semantic-release",
+    "prepare": "husky"
   },
   "keywords": ["ssh", "logs", "nginx", "bun", "react"],
   "author": "Dino Kupinic",
@@ -31,9 +32,16 @@
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^11.0.1",
     "@semantic-release/release-notes-generator": "^14.0.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "semantic-release": "^24.2.3",
     "turbo": "^2.5.5"
+  },
+  "lint-staged": {
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
+      "biome check --write ."
+    ]
   }
 }

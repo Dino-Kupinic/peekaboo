@@ -18,7 +18,7 @@ jobs:
       - name: set up bun
         uses: oven-sh/setup-bun@v1
 
-      - name: install deps and run tests in /backend
-        run: cd backend && bun install && bun test
+      - name: install deps and run tests in /apps/api
+        run: cd apps/api && bun install && bun test
         env:
           JWT_SECRET: "03701e1b4550c20fa380692f385f34279e2415ad5906b2e9ca02893118299646"
