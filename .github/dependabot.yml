@@ -4,6 +4,9 @@ updates:
     schedule:
       interval: "monthly"
     target-branch: "develop"
+    ignore:
+      - dependency-name: "zod"
+        versions: [ "4" ]
     directories:
       - "/"
       - "/frontend"
