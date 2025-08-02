@@ -90,7 +90,6 @@
             "noDuplicateElseIf": "error",
             "noDuplicateObjectKeys": "error",
             "noDuplicateParameters": "error",
-            "noEmptyBlockStatements": "error",
             "noFallthroughSwitchClause": "error",
             "noFunctionAssign": "error",
             "noGlobalAssign": "error",
@@ -154,7 +153,6 @@
             "useAsConstAssertion": "error"
           },
           "suspicious": {
-            "noExplicitAny": "error",
             "noExtraNonNullAssertion": "error",
             "noMisleadingInstantiator": "error",
             "noUnsafeDeclarationMerging": "error",

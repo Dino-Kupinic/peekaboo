@@ -1,4 +1,4 @@
-import type { Client } from "ssh2"
+import type { Client } from 'ssh2'
 
 export type Session = {
   client: Client

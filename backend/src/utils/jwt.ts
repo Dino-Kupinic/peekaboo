@@ -1,8 +1,8 @@
-import { jwtVerify, SignJWT } from "jose"
-import type { AuthBody } from "../types/auth.ts"
+import { jwtVerify, SignJWT } from 'jose'
+import type { AuthBody } from '../types/auth.ts'
 
 if (!process.env.JWT_SECRET) {
-  throw new Error("JWT_SECRET not defined in environment")
+  throw new Error('JWT_SECRET not defined in environment')
 }
 /**
  * Secret key for signing the JWT.
@@ -15,10 +15,10 @@ const secret = new TextEncoder().encode(process.env.JWT_SECRET)
  */
 export async function signToken(body: AuthBody) {
   return await new SignJWT({ auth: body })
-    .setProtectedHeader({ alg: "HS256" })
+    .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setSubject("ssh")
-    .setExpirationTime("15min")
+    .setSubject('ssh')
+    .setExpirationTime('15min')
     .sign(secret)
 }
 
@@ -36,13 +36,13 @@ export async function verifyToken(token: string) {
  * @param req The request containing the JWT token in the Authorization header.
  */
 export function getTokenFromHeader(req: Request) {
-  const header = req.headers.get("Authorization")
+  const header = req.headers.get('Authorization')
   if (!header) {
-    throw new Error("No authorization header provided")
+    throw new Error('No authorization header provided')
   }
-  const token = header.split(" ")[1]
+  const token = header.split(' ')[1]
   if (!token) {
-    throw new Error("No token provided")
+    throw new Error('No token provided')
   }
   return token
 }
@@ -54,7 +54,7 @@ export function getTokenFromHeader(req: Request) {
 export async function authenticateJwt(req: Request) {
   const token = getTokenFromHeader(req)
   if (!token) {
-    throw new Error("No token provided")
+    throw new Error('No token provided')
   }
   const payload = await verifyToken(token)
   if (payload === undefined) {

@@ -3,11 +3,7 @@
   "description": "nginx log viewer",
   "packageManager": "bun@1.2.19",
   "private": true,
-  "workspaces": [
-    "frontend",
-    "backend",
-    "packages/*"
-  ],
+  "workspaces": ["frontend", "backend", "packages/*"],
   "scripts": {
     "dev:frontend": "turbo run dev --filter=frontend",
     "dev:backend": "turbo run dev --filter=backend",
@@ -25,13 +21,7 @@
     "check:check": "biome check",
     "release": "semantic-release"
   },
-  "keywords": [
-    "ssh",
-    "logs",
-    "nginx",
-    "bun",
-    "react"
-  ],
+  "keywords": ["ssh", "logs", "nginx", "bun", "react"],
   "author": "Dino Kupinic",
   "license": "MIT",
   "devDependencies": {

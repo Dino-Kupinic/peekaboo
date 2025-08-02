@@ -1,11 +1,11 @@
-import { describe, expect, test, mock, beforeEach } from "bun:test"
-import StreamService from "../../src/services/streamService.ts"
-import LoggingService from "../../src/services/loggingService.ts"
-import CommandService from "../../src/services/commandService.ts"
-import { Client } from "ssh2"
-import { EventEmitter } from "events"
+import { beforeEach, describe, expect, mock, test } from 'bun:test'
+import { EventEmitter } from 'events'
+import { Client } from 'ssh2'
+import CommandService from '../../src/services/commandService.ts'
+import LoggingService from '../../src/services/loggingService.ts'
+import StreamService from '../../src/services/streamService.ts'
 
-describe("StreamService", () => {
+describe('StreamService', () => {
   let mockClient: any
   let mockLogger: any
   let mockCommandService: any
@@ -38,15 +38,15 @@ describe("StreamService", () => {
     )
   })
 
-  const id = "test"
-  const path = "/var/log/nginx/access.log"
+  const id = 'test'
+  const path = '/var/log/nginx/access.log'
 
-  test("should start streaming logs successfully", async () => {
+  test('should start streaming logs successfully', async () => {
     const onDataMock = mock((_data: string) => {})
     const streamPromise = streamService.startStream(path, id, onDataMock)
 
-    const data = "test"
-    mockStream.emit("data", Buffer.from(data))
+    const data = 'test'
+    mockStream.emit('data', Buffer.from(data))
 
     await streamPromise
 
@@ -60,9 +60,9 @@ describe("StreamService", () => {
     )
   })
 
-  test("should handle stream command errors", async () => {
+  test('should handle stream command errors', async () => {
     const onDataMock = mock()
-    const execError = new Error("File not found")
+    const execError = new Error('File not found')
 
     mockCommandService.runStreamCommand = mock(
       (_command: string, callback: Function) => {
@@ -76,28 +76,28 @@ describe("StreamService", () => {
     expect(mockLogger.error).toHaveBeenCalled()
   })
 
-  test("should handle stream errors", async () => {
+  test('should handle stream errors', async () => {
     const onDataMock = mock()
     const streamError = new Error()
 
     await streamService.startStream(path, id, onDataMock)
 
-    mockStream.emit("error", streamError)
+    mockStream.emit('error', streamError)
 
     expect(mockLogger.error).toHaveBeenCalled()
   })
 
-  test("should handle stream close event", async () => {
+  test('should handle stream close event', async () => {
     const onDataMock = mock()
 
     await streamService.startStream(path, id, onDataMock)
 
-    mockStream.emit("close", 0)
+    mockStream.emit('close', 0)
 
     expect(mockLogger.info).toHaveBeenCalled()
   })
 
-  test("should stop log stream successfully", async () => {
+  test('should stop log stream successfully', async () => {
     const onDataMock = mock()
 
     await streamService.startStream(path, id, onDataMock)
@@ -108,7 +108,7 @@ describe("StreamService", () => {
     expect(mockLogger.info).toHaveBeenCalledWith(`stopped log stream ${id}`)
   })
 
-  test("should handle stopping non-existent stream", () => {
+  test('should handle stopping non-existent stream', () => {
     streamService.stopStream(id)
 
     expect(mockLogger.warn).toHaveBeenCalledWith(

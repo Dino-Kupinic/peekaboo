@@ -1,5 +1,5 @@
-import { authBodySchema } from "../schemas/auth.ts"
-import { z } from "zod"
+import { z } from 'zod'
+import { authBodySchema } from '../schemas/auth.ts'
 
 /**
  * The authentication body.

@@ -1,6 +1,6 @@
-import type { Client } from "ssh2"
-import LoggingService from "./loggingService"
-import CommandService from "./commandService"
+import type { Client } from 'ssh2'
+import CommandService from './commandService'
+import LoggingService from './loggingService'
 
 /**
  * Service class to handle streaming of log files via WebSockets.
@@ -43,8 +43,8 @@ export default class StreamService {
 
         this.streams.set(id, stream)
 
-        stream.on("data", (data: Buffer) => {
-          const lines = data.toString().split("\n")
+        stream.on('data', (data: Buffer) => {
+          const lines = data.toString().split('\n')
           for (const line of lines) {
             if (line.trim().length === 0) continue
             const parsed = this.parseLine(line)
@@ -52,16 +52,16 @@ export default class StreamService {
           }
         })
 
-        stream.stderr.on("data", (data: Buffer) => {
+        stream.stderr.on('data', (data: Buffer) => {
           this.logger.warn(`log stream error: ${data.toString()}`)
         })
 
-        stream.on("close", (code: number) => {
+        stream.on('close', (code: number) => {
           this.logger.info(`log stream closed with code ${code}`)
           this.streams.delete(id)
         })
 
-        stream.on("error", (err: Error) => {
+        stream.on('error', (err: Error) => {
           this.logger.error(`log stream error: ${err.message}`)
           this.streams.delete(id)
           reject(err)
