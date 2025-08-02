@@ -1,3 +1,16 @@
+# [1.5.0](https://github.com/Dino-Kupinic/peekaboo/compare/v1.4.0...v1.5.0) (2025-08-02)
+
+
+### Bug Fixes
+
+* format and lint ([74b37cc](https://github.com/Dino-Kupinic/peekaboo/commit/74b37cc379a4b07137426a4497027eb44c46ea56))
+* update workflow ([e2320d7](https://github.com/Dino-Kupinic/peekaboo/commit/e2320d7b2df61840fddd8e6edfca1ee19d787329))
+
+
+### Features
+
+* migrate to biome ([0ab6d67](https://github.com/Dino-Kupinic/peekaboo/commit/0ab6d67159fb7bb40b354070ef4906f9e023aff6))
+
 # [1.4.0](https://github.com/Dino-Kupinic/peekaboo/compare/v1.3.0...v1.4.0) (2025-04-28)
 
 
