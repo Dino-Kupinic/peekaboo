@@ -1,7 +1,7 @@
-import type { Client } from "ssh2"
-import type { Session } from "../types/session.ts"
-import type { AuthBody } from "../types/auth.ts"
-import { signToken, verifyToken } from "../utils/jwt.ts"
+import type { Client } from 'ssh2'
+import type { AuthBody } from '../types/auth.ts'
+import type { Session } from '../types/session.ts'
+import { signToken, verifyToken } from '../utils/jwt.ts'
 
 /**
  * Service class to handle ssh sessions.

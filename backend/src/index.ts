@@ -1,14 +1,14 @@
-import type { WebSocketData } from "./types/websocket.ts"
-import AuthService from "./services/authService"
-import LoggingService from "./services/loggingService.ts"
-import SessionService from "./services/sessionService.ts"
-import StreamService from "./services/streamService.ts"
-import wsSendJson from "./utils/wsSendJson.ts"
-import withCors from "./utils/withCors.ts"
-import authRoute from "./routes/auth.ts"
-import logoutRoute from "./routes/logout.ts"
-import commandRoute from "./routes/command.ts"
-import sessionRoute from "./routes/session.ts"
+import authRoute from './routes/auth.ts'
+import commandRoute from './routes/command.ts'
+import logoutRoute from './routes/logout.ts'
+import sessionRoute from './routes/session.ts'
+import AuthService from './services/authService'
+import LoggingService from './services/loggingService.ts'
+import SessionService from './services/sessionService.ts'
+import StreamService from './services/streamService.ts'
+import type { WebSocketData } from './types/websocket.ts'
+import withCors from './utils/withCors.ts'
+import wsSendJson from './utils/wsSendJson.ts'
 
 const logger = new LoggingService()
 const session = new SessionService()
@@ -26,23 +26,23 @@ const server = Bun.serve({
     message(ws, message) {
       try {
         const data = JSON.parse(message.toString())
-        logger.info("WebSocket received:", data)
+        logger.info('WebSocket received:', data)
 
         const wsData = sockets.get(ws) ?? {}
 
-        if (data.type === "start" && data.session) {
+        if (data.type === 'start' && data.session) {
           const id = data.session
           const session = auth.sessionService.sessions.get(id)
 
           if (!session) {
             wsSendJson(ws, {
-              type: "error",
-              message: "Session not found",
+              type: 'error',
+              message: 'Session not found',
             })
             return
           }
 
-          const path = data.path || "/var/log/nginx/access.log"
+          const path = data.path || '/var/log/nginx/access.log'
           const stream = `${id}-${Date.now()}`
 
           const streamService = new StreamService(session.client, logger)
@@ -50,14 +50,14 @@ const server = Bun.serve({
           streamService
             .startStream(path, stream, (data) => {
               wsSendJson(ws, {
-                type: "data",
+                type: 'data',
                 stream,
                 data,
               })
             })
             .catch((error) => {
               wsSendJson(ws, {
-                type: "error",
+                type: 'error',
                 message: error.message,
               })
             })
@@ -65,24 +65,24 @@ const server = Bun.serve({
           sockets.set(ws, { stream: streamService, id: stream })
 
           wsSendJson(ws, {
-            type: "started",
+            type: 'started',
             stream,
           })
-        } else if (data.type === "stop" && wsData.id) {
+        } else if (data.type === 'stop' && wsData.id) {
           if (wsData.stream) {
             wsData.stream.stopStream(wsData.id)
             wsSendJson(ws, {
-              type: "stopped",
+              type: 'stopped',
               stream: wsData.id,
             })
             sockets.set(ws, {})
           }
         }
       } catch (error) {
-        console.error("Error processing message:", error)
+        console.error('Error processing message:', error)
         wsSendJson(ws, {
-          type: "error",
-          message: "Invalid message format",
+          type: 'error',
+          message: 'Invalid message format',
         })
       }
     },
@@ -96,22 +96,22 @@ const server = Bun.serve({
     },
   },
   routes: {
-    "/": () => {
-      return withCors("ok", 200)
+    '/': () => {
+      return withCors('ok', 200)
     },
-    "/ws": (req, server) => {
+    '/ws': (req, server) => {
       const success = server.upgrade(req)
       if (success) return undefined
-      return withCors("WebSocket running")
+      return withCors('WebSocket running')
     },
-    "/auth": authRoute(auth, session),
-    "/logout": logoutRoute(auth),
-    "/session/:token": sessionRoute(auth),
-    "/command/:token": commandRoute(auth, logger),
+    '/auth': authRoute(auth, session),
+    '/logout': logoutRoute(auth),
+    '/session/:token': sessionRoute(auth),
+    '/command/:token': commandRoute(auth, logger),
   },
   error(err) {
     logger.error(err.message)
-    return withCors("Internal Server Error", 500)
+    return withCors('Internal Server Error', 500)
   },
 })
 

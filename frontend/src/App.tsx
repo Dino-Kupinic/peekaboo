@@ -1,28 +1,28 @@
-import { ThemeProvider } from "@/components/theme-provider.tsx"
-import { ModeToggle } from "@/components/mode-toggle.tsx"
-import { useState } from "react"
-import { LogStream } from "@/components/flow/log-stream.tsx"
-import { Button } from "@/components/ui/button"
-import NavigationBar from "@/components/layouts/navigation-bar.tsx"
-import ToolBar from "@/components/layouts/tool-bar.tsx"
-import Search from "@/components/toolbar/search.tsx"
-import { Radio, RefreshCw } from "lucide-react"
+import { Radio, RefreshCw } from 'lucide-react'
+import { useState } from 'react'
+import AuthModal from '@/components/auth/auth-modal.tsx'
+import Connection from '@/components/auth/connection.tsx'
+import { LogStream } from '@/components/flow/log-stream.tsx'
+import NavigationBar from '@/components/layouts/navigation-bar.tsx'
+import ToolBar from '@/components/layouts/tool-bar.tsx'
+import { ModeToggle } from '@/components/mode-toggle.tsx'
+import { ThemeProvider } from '@/components/theme-provider.tsx'
+import Search from '@/components/toolbar/search.tsx'
+import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select.tsx"
-import Connection from "@/components/auth/connection.tsx"
-import AuthModal from "@/components/auth/auth-modal.tsx"
+} from '@/components/ui/select.tsx'
 
-import { useAuth } from "@/lib/auth/useAuth.tsx"
+import { useAuth } from '@/lib/auth/useAuth.tsx'
 
 function App() {
   const { isAuthenticated } = useAuth()
   const [customLogPath, setCustomLogPath] = useState<string>(
-    "/var/log/nginx/access.log",
+    '/var/log/nginx/access.log',
   )
 
   return (

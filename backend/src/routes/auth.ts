@@ -1,7 +1,7 @@
-import withCors from "../utils/withCors.ts"
-import { authBodySchema } from "../schemas/auth.ts"
-import type AuthService from "../services/authService.ts"
-import type SessionService from "../services/sessionService.ts"
+import { authBodySchema } from '../schemas/auth.ts'
+import type AuthService from '../services/authService.ts'
+import type SessionService from '../services/sessionService.ts'
+import withCors from '../utils/withCors.ts'
 
 /**
  * Authentication route.

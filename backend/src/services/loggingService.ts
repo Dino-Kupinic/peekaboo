@@ -1,22 +1,22 @@
-import pino from "pino"
+import pino from 'pino'
 
 /**
  * Destination for the log file. This is used in production mode.
  */
-const destination = process.env.LOGS_DESTINATION || "./logs.log"
+const destination = process.env.LOGS_DESTINATION || './logs.log'
 /**
  * Log level based on the environment. We use "info" in production and "debug" in
  * development for more information.
  */
-const isDev = process.env.NODE_ENV !== "production"
-const level = isDev ? "debug" : "info"
+const isDev = process.env.NODE_ENV !== 'production'
+const level = isDev ? 'debug' : 'info'
 const transportOptions = isDev
   ? {
-      target: "pino-pretty",
+      target: 'pino-pretty',
       options: { colorize: true },
     }
   : {
-      target: "pino/file",
+      target: 'pino/file',
       options: { destination },
     }
 

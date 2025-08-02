@@ -1,13 +1,13 @@
-import { Button } from "@/components/ui/button.tsx"
-import { useAuth } from "@/lib/auth/useAuth.tsx"
+import { Button } from '@/components/ui/button.tsx'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover.tsx"
+} from '@/components/ui/popover.tsx'
+import { useAuth } from '@/lib/auth/useAuth.tsx'
 
 export default function Connection() {
-  const { token: session, logout } = useAuth()
+  const { logout } = useAuth()
 
   return (
     <>

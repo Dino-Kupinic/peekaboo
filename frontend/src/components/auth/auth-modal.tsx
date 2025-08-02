@@ -1,3 +1,6 @@
+import { EthernetPort } from 'lucide-react'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button.tsx'
 import {
   Dialog,
   DialogClose,
@@ -7,38 +10,35 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog.tsx"
-import { Button } from "@/components/ui/button.tsx"
-import { Input } from "@/components/ui/input.tsx"
-import { EthernetPort } from "lucide-react"
-import { Label } from "@/components/ui/label.tsx"
-import { useState } from "react"
+} from '@/components/ui/dialog.tsx'
+import { Input } from '@/components/ui/input.tsx'
+import { Label } from '@/components/ui/label.tsx'
 
-import { useAuth } from "@/lib/auth/useAuth.tsx"
+import { useAuth } from '@/lib/auth/useAuth.tsx'
 
 export default function AuthModal() {
   const { setToken } = useAuth()
   // TODO: remove hardcoded values
   const [formData, setFormData] = useState({
-    host: "localhost",
+    host: 'localhost',
     port: 2222,
-    username: "testuser",
-    password: "testpass",
+    username: 'testuser',
+    password: 'testpass',
   })
 
   async function connect() {
     try {
-      const response = await fetch("http://localhost:3000/auth", {
-        method: "POST",
+      const response = await fetch('http://localhost:3000/auth', {
+        method: 'POST',
         body: JSON.stringify({
           ...formData,
-          type: "password",
+          type: 'password',
         }),
       })
       const token = await response.text()
       setToken(token)
     } catch (error) {
-      console.error("Failed to connect:", error)
+      console.error('Failed to connect:', error)
     }
   }
 

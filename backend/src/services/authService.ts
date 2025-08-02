@@ -1,7 +1,7 @@
-import { Client } from "ssh2"
-import type { AuthBody } from "../types/auth"
-import type SessionService from "./sessionService.ts"
-import LoggingService from "./loggingService"
+import { Client } from 'ssh2'
+import type { AuthBody } from '../types/auth'
+import LoggingService from './loggingService'
+import type SessionService from './sessionService.ts'
 
 /**
  * Service class to handle ssh authentication.
@@ -41,7 +41,7 @@ export default class AuthService {
       const t = setTimeout(() => {
         if (done) return
         done = true
-        const err = new Error("Connection timed out")
+        const err = new Error('Connection timed out')
         this.loggingService.error(err.message)
         client.end()
         reject(err)
@@ -54,7 +54,7 @@ export default class AuthService {
         password: auth.password,
       })
 
-      client.once("ready", () => {
+      client.once('ready', () => {
         if (done) return
         done = true
         clearTimeout(t)
@@ -64,7 +64,7 @@ export default class AuthService {
         resolve(client)
       })
 
-      client.once("error", (err) => {
+      client.once('error', (err) => {
         if (done) return
         done = true
         clearTimeout(t)
@@ -74,7 +74,7 @@ export default class AuthService {
         reject(err)
       })
 
-      client.once("close", () => {
+      client.once('close', () => {
         clearTimeout(t)
 
         const token = this.sessionService.findSessionByClient(client)
@@ -103,7 +103,7 @@ export default class AuthService {
     if (session) {
       session.client.end()
       this.sessionService.sessions.delete(token)
-      this.loggingService.info("disconnected from ssh server")
+      this.loggingService.info('disconnected from ssh server')
     } else {
       this.loggingService.warn(`session ${token} not found, cannot disconnect`)
     }

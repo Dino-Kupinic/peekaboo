@@ -1,8 +1,8 @@
-import { useContext } from "react"
-import { AuthContext } from "@/lib/auth/authContext.tsx"
+import { useContext } from 'react'
+import { AuthContext } from '@/lib/auth/authContext.tsx'
 
 export function useAuth() {
   const context = useContext(AuthContext)
-  if (!context) throw new Error("useAuth must be used inside AuthProvider")
+  if (!context) throw new Error('useAuth must be used inside AuthProvider')
   return context
 }
