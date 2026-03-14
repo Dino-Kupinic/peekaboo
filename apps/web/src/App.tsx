@@ -31,7 +31,7 @@ function App() {
         <div className="flex h-full w-full flex-col">
           <main className="relative h-full w-full grow overflow-hidden rounded-md border">
             <NavigationBar>
-              <h1 className="text-xl font-semibold tracking-tight">peekaboo</h1>
+              <h1 className="text-xl font-semibold tracking-tight">logscope</h1>
               <div className="flex items-center gap-2">
                 {isAuthenticated ? <Connection /> : <AuthModal />}
                 <ModeToggle />

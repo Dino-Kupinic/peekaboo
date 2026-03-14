@@ -1,4 +1,4 @@
-# peekaboo
+# logscope
 
 A full stack web application for viewing nginx logs in real time. 
 
@@ -6,7 +6,7 @@ A full stack web application for viewing nginx logs in real time.
 > Note: This is heavily work in progress, and this is a preview of v1.3.0
 
 > [!CAUTION]
-> peekaboo is still heavy in development, expect breaking changes often.
+> logscope is still heavy in development, expect breaking changes often.
 
 ## ⏳ Activity
 
@@ -14,7 +14,7 @@ A full stack web application for viewing nginx logs in real time.
 
 ## ♻️ Release Cycle
 
-peekaboo follows the [Semantic Versioning](https://semver.org/) guidelines.
+logscope follows the [Semantic Versioning](https://semver.org/) guidelines.
 
 ## ✨ Installation and Configuration
 
@@ -23,7 +23,7 @@ peekaboo follows the [Semantic Versioning](https://semver.org/) guidelines.
 1. clone the repository:
 
 ```bash
-git clone https://github.com/Dino-Kupinic/peekaboo.git
+git clone https://github.com/Dino-Kupinic/logscope.git
 ```
 
 2. install packages
