@@ -38,10 +38,5 @@
     "lint-staged": "^16.2.7",
     "semantic-release": "^25.0.3",
     "turbo": "^2.8.17"
-  },
-//  "lint-staged": {
-//    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
-//      "biome check --write ."
-//    ]
-//  }
+  }
 }
