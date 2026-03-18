@@ -7,28 +7,27 @@
     "apps/*",
     "packages/*"
   ],
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev:web": "turbo run dev --filter=@logscope/web",
     "dev:api": "turbo run dev --filter=@logscope/api",
-    "dev:shared": "turbo run dev --filter=@logscope/shared",
     "dev": "turbo dev",
     "test:web": "turbo run test --filter=@logscope/web",
     "test:api": "turbo run test --filter=@logscope/api",
     "test": "turbo test",
     "build": "turbo build",
     "lint": "biome lint --write",
-    "lint:check": "biome lint",
     "format": "biome format --write",
-    "format:check": "biome format",
     "check": "biome check --write",
-    "check:check": "biome check",
     "release": "semantic-release",
     "prepare": "husky"
   },
   "author": "Dino Kupinic",
   "license": "MIT",
   "devDependencies": {
-    "@biomejs/biome": "2.4.7",
+    "@biomejs/biome": "^2.4.7",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/git": "^10.0.1",
