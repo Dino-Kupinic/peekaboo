@@ -1,9 +1,13 @@
 [project]
 name = "demo"
 version = "0.1.0"
-description = "Add your description here"
+description = "Demo application for logscope for instrumentation."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi>=0.135.1",
+    "fastapi[standard]>=0.135.1",
+    "opentelemetry-api>=1.40.0",
+    "opentelemetry-exporter-otlp>=1.40.0",
+    "opentelemetry-instrumentation-fastapi>=0.61b0",
+    "opentelemetry-sdk>=1.40.0",
 ]

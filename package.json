@@ -36,7 +36,7 @@
     "husky": "catalog:git-hooks",
     "lint-staged": "catalog:git-hooks",
     "semantic-release": "catalog:release",
-    "turbo": "catalog:tooling"
+    "turbo": "^2.8.19"
   },
   "catalogs": {
     "react": {
